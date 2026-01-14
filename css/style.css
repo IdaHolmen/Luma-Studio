@@ -127,6 +127,15 @@ body {
   padding: 0 3rem;
   display: flex;
   justify-content: end;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--primary-color);
+
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .toggle-holder {
@@ -226,7 +235,8 @@ input:checked + .slider:before {
 .lamp-6,
 .lamp-7,
 .lamp-8,
-.lamp-9 {
+.lamp-9,
+.lamp-10 {
   display: flex;
   justify-content: center;
   flex-direction: column;
