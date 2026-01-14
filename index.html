@@ -6,9 +6,138 @@
     <title>Luma Studio</title>
 
     <link rel="stylesheet" href="./css/reset.css" />
+    <link rel="stylesheet" href="./css/variables.css" />
     <link rel="stylesheet" href="./css/style.css" />
   </head>
+
   <body>
+    <header class="header">
+      <div class="header-left">
+        <a href="./index.html" class="home-button-container">
+          <h1 class="header__headline-bold">Luma</h1>
+          <h1 class="header__headline-light">Studio</h1>
+        </a>
+      </div>
+      <div class="header-right">
+        <div class="search-container">
+          <img class="search-symbol" src="./assets/icons/search.svg" alt="Magnifying glass" />
+          <input class="search-field" type="text" placeholder="Search" />
+        </div>
+        <a href="" class="liked-products-container">
+          <img class="liked-products-icon" src="./assets/icons/liked-products.svg" alt="" />
+        </a>
+        <a href="" class="shopping-bag">
+          <img class="shopping-bag-icon" src="./assets/icons/shopping-bag.svg" alt="Shopping bag" />
+          <!-- <div class="badge"></div> -->
+        </a>
+      </div>
+    </header>
+
+    <main class="main-container">
+      <div class="toggle-container">
+        <div class="toggle-holder">
+          <label for="light">Lyst</label>
+          <div class="component" data-component-name="toggle-button">
+            <label class="switch">
+              <input id="toggle" type="checkbox" />
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <label for="dark">Mørkt</label>
+        </div>
+      </div>
+
+      <div class="content-container">
+        <div class="lamp__container" data-index="0" data-title="lamp1">
+          <a class="lamp-1">
+            <div class="lamp-stage">
+              <img src="./assets/images/lamp1-light.jpeg" alt="" class="lamp-image" />
+              <img src="./assets/images/lamp1-dark.jpeg" alt="" class="lamp-image__dark" />
+            </div>
+            <div class="lamp__info">
+              <div class="lamp__price">249,-</div>
+              <p class="lamp__title">Lampe</p>
+            </div>
+          </a>
+          <button class="add__button">Add to cart</button>
+        </div>
+
+        <div class="lamp__container" data-index="0" data-title="lamp2">
+          <a class="lamp-2">
+            <div class="lamp-stage">
+              <img src="./assets/images/lamp2-light.jpeg" alt="" class="lamp-image" />
+              <img src="./assets/images/lamp2-dark.jpeg" alt="" class="lamp-image__dark" />
+            </div>
+
+            <div class="lamp__info">
+              <div class="lamp__price">249,-</div>
+              <p class="lamp__title">Lampe</p>
+            </div>
+          </a>
+          <button class="add__button">Add to cart</button>
+        </div>
+
+        <div class="lamp__container" data-index="0" data-title="lamp3">
+          <a class="lamp-3">
+            <div class="lamp-stage">
+              <img src="./assets/images/lamp3-light.jpeg" alt="" class="lamp-image" />
+              <img src="./assets/images/lamp3-dark.jpeg" alt="" class="lamp-image__dark" />
+            </div>
+
+            <div class="lamp__info">
+              <div class="lamp__price">249,-</div>
+              <p class="lamp__title">Lampe</p>
+            </div>
+          </a>
+          <button class="add__button">Add to cart</button>
+        </div>
+
+        <div class="lamp__container" data-index="0" data-title="lamp4">
+          <a class="lamp-4">
+            <div class="lamp-stage">
+              <img src="./assets/images/lamp4-light.jpeg" alt="" class="lamp-image" />
+              <img src="./assets/images/lamp4-dark.jpeg" alt="" class="lamp-image__dark" />
+            </div>
+
+            <div class="lamp__info">
+              <div class="lamp__price">249,-</div>
+              <p class="lamp__title">Lampe</p>
+            </div>
+          </a>
+          <button class="add__button">Add to cart</button>
+        </div>
+
+        <div class="lamp__container" data-index="0" data-title="lamp5">
+          <a class="lamp-5">
+            <div class="lamp-stage">
+              <img src="./assets/images/lamp5-light.jpeg" alt="" class="lamp-image" />
+              <img src="./assets/images/lamp5-dark.jpeg" alt="" class="lamp-image__dark" />
+            </div>
+
+            <div class="lamp__info">
+              <div class="lamp__price">249,-</div>
+              <p class="lamp__title">Lampe</p>
+            </div>
+          </a>
+          <button class="add__button">Add to cart</button>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-text">
+        This site is created as a study project by
+        <b>Ida Amundsen Holmen</b>
+        .
+      </div>
+      <div>
+        Reach out to me at e-mail
+        <b>idaaholmen@gmail.com</b>
+        or check out the code at
+        <a class="github-link" href="https://github.com/IdaHolmen/231107-main-project">Github.</a>
+      </div>
+    </footer>
+
     <script src="app.js" defer></script>
   </body>
 </html>

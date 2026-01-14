@@ -1,0 +1,47 @@
+:root {
+  --font-leading-base: 1rem;
+
+  --font-size-base: var(--font-leading-base);
+  --font-size-small: 1.2rem;
+  --font-size-sm-medium: 1.5rem;
+  --font-size-medium: 2.3rem;
+  --font-size-medium-large: 3.5rem;
+  --font-size-headline: 5rem;
+
+  --spacing-small: var(--font-leading-base);
+  --spacing-medium: var(--font-size-sm-medium);
+  --spacing-large: 3rem;
+  --spacing-xlarge: 4rem;
+  --spacing-xxlarge: 5rem;
+  --spacing-xxxlarge: var(--font-size-headline);
+  --spacing-superlarge: 10rem;
+
+  --color-primary: #fffef7;
+  --color-secondary: #556030;
+
+  --color-accent-1: white;
+  --color-accent-2: #dda15e;
+
+  --color-button-primary: #606c38;
+  --color-button-secondary: #7a8e3a;
+  --color-button-tertiary: #283618;
+
+  --color-back-button-hover: #e9edc9;
+  --color-back-button-active: #ccd5ae;
+
+  --color-home-page-normal: #ffd6d6;
+  --color-home-page-hover: #ff9494;
+  --color-home-page-active: #cb5353;
+
+  --color-search-bar: #ebebeb;
+  --color-back-button-cart-hover: #ffc1c1;
+
+  --border-radius-small: 0.625rem;
+  --border-radius-sm-medium: 0.938rem;
+  --border-radius-medium: 1.563rem;
+  --border-radius-large: 1.875rem;
+
+  --border-black: 0.5px solid black;
+  --border-green: 1px solid var(--color-secondary);
+  --border-brown: 2px solid var(--color-accent-2);
+}
