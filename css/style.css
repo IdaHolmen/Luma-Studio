@@ -15,8 +15,6 @@
 body {
   background-color: var(--primary-color);
 }
-
-/* Header styling */
 .header {
   width: 100%;
   padding: 1.5rem 3rem;
@@ -34,77 +32,65 @@ body {
 
 .header__headline-bold {
   font-family: "Canela-Regular";
-  color: var(--secondary-color);
+  color: #3b414f;
   font-weight: 800;
 }
 
 .header__headline-light {
   font-family: "Canela-Regular";
-  color: var(--secondary-color);
+  color: #3b414f;
   font-weight: 300;
 }
 
 .header-right {
-  width: 40%;
+  width: 50%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  color: var(--secondary-color);
 }
 
 .header__headline {
   font-size: var(--font-size-headline);
+  color: var(--color-secondary);
   flex-basis: 80%;
   text-align: center;
 }
 
-.search-container {
+.shopping-bag-icon {
   position: relative;
 }
 
-.search-field {
-  display: inline-block;
-  outline: none;
-  padding-left: 2rem;
-  font-size: 1rem;
-  width: 18.75rem;
-  height: 2.25rem;
-  text-align: left;
-  border-radius: 1.5rem;
-  border: 1px solid var(--secondary-color);
-  background: var(--color-accent-1);
-}
-
-.search-field--active {
-  border: 2px solid var(--secondary-color);
-}
-
-.search-symbol {
+.badge {
+  width: 1.2rem;
+  height: 1.2rem;
+  background: red;
+  color: var(--color-accent-1);
+  border-radius: var(--border-radius-medium);
   position: absolute;
-  display: inline-block;
-  width: 1.1rem;
-  height: 1.1rem;
-  left: 0.5rem;
-  top: 0.6rem;
+  top: -0.2rem;
+  right: -0.4rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.liked-products,
+.shopping-bag {
+  margin-left: 1rem;
+  padding: 0.6rem;
+  border-radius: 50%;
+}
+
+.liked-products:hover,
+.shopping-bag:hover {
+  background-color: var(--header-button-hover);
 }
 
 .liked-products-icon,
 .shopping-bag-icon {
-  width: 1.1rem;
-  height: 1.1rem;
-  color: var(--secondary-color);
-  padding: 1rem;
-  border-radius: 50%;
-}
-
-.liked-products-icon:hover,
-.shopping-bag-icon:hover {
-  background-color: var(--header-button-hover);
-}
-
-.shopping-bag-icon {
-  position: relative;
+  min-width: 1.2rem;
+  min-height: 1.2rem;
 }
 
 /* .badge {
