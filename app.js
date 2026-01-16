@@ -177,3 +177,33 @@ const updateBadgeCount = () => {
     badge.style.display = "none";
   }
 };
+
+async function renderProducts() {
+  const res = await fetch("http://localhost:3000/api/products");
+  const products = await res.json();
+
+  const container = document.querySelector("#products");
+
+  container.innerHTML = products
+    .sort((a, b) => a.index - b.index)
+    .map(
+      (p) => `
+      <div class="lamp__container" data-index="${p.index}" data-type="${p.type}">
+        <a class="lamp-${p.index + 1}">
+          <div class="lamp-stage">
+            <img src="${p.imageLight}" alt="${p.title}" class="lamp-image" />
+            <img src="${p.imageDark}" alt="${p.title}" class="lamp-image__dark" />
+          </div>
+          <div class="lamp__info">
+            <div class="lamp__price">${p.price},-</div>
+            <p class="lamp__title">${p.title}</p>
+            <button class="add__button">Legg i handlevogn</button>
+          </div>
+        </a>
+      </div>
+    `
+    )
+    .join("");
+}
+
+renderProducts();
