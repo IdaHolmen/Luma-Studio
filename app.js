@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //Used this video to understand the different elements
 //https://www.youtube.com/watch?v=YeFzkC2awTM&t=2s
 
-const checkoutMenuButton = document.querySelector(".shopping-bag");
+const checkoutMenuButton = document.querySelector("#cart");
 const checkoutMenu = document.querySelector(".checkout-container");
 const crossOutMenuButton = document.querySelector(".exit-icon");
 const headerContainer = document.querySelector(".header");
@@ -184,26 +184,26 @@ async function renderProducts() {
 
   const container = document.querySelector("#products");
 
-  container.innerHTML = products
-    .sort((a, b) => a.index - b.index)
-    .map(
-      (p) => `
-      <div class="lamp__container" data-index="${p.index}" data-type="${p.type}">
-        <a class="lamp-${p.index + 1}">
-          <div class="lamp-stage">
-            <img src="${p.imageLight}" alt="${p.title}" class="lamp-image" />
-            <img src="${p.imageDark}" alt="${p.title}" class="lamp-image__dark" />
-          </div>
-          <div class="lamp__info">
-            <div class="lamp__price">${p.price},-</div>
-            <p class="lamp__title">${p.title}</p>
-            <button class="add__button">Legg i handlevogn</button>
-          </div>
-        </a>
-      </div>
-    `
-    )
-    .join("");
+  // container.innerHTML = products
+  //   .sort((a, b) => a.index - b.index)
+  //   .map(
+  //     (p) => `
+  //     <div class="lamp__container" data-index="${p.index}" data-type="${p.type}">
+  //       <a class="lamp-${p.index + 1}">
+  //         <div class="lamp-stage">
+  //           <img src="${p.imageLight}" alt="${p.title}" class="lamp-image" />
+  //           <img src="${p.imageDark}" alt="${p.title}" class="lamp-image__dark" />
+  //         </div>
+  //         <div class="lamp__info">
+  //           <div class="lamp__price">${p.price},-</div>
+  //           <p class="lamp__title">${p.title}</p>
+  //           <button class="add__button">Legg i handlevogn</button>
+  //         </div>
+  //       </a>
+  //     </div>
+  //   `
+  //   )
+  //   .join("");
 }
 
 renderProducts();
