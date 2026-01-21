@@ -196,19 +196,127 @@ async function getProducts() {
 
 function renderProducts(products) {
   contentContainer.textContent = "";
+  contentContainer.classList.add("content-container");
 
   const fragment = document.createDocumentFragment();
 
   products
     .sort((a, b) => a.index - b.index)
     .forEach((p) => {
-      const wrapper = document.createElement("div");
-      wrapper.classList.add("lamp-container");
-      wrapper.dataset.index = p.index;
-      wrapper.dataset.type = p.type;
+      const cardLink = document.createElement("a");
+      cardLink.classList.add("lamp-container", `lamp-${p.index + 1}`);
+      cardLink.dataset.index = p.index;
+      cardLink.dataset.type = p.type;
 
-      const link = document.createElement("a");
-      link.classList.add(`lamp-${p.index + 1}`);
+      cardLink.href = `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
+
+      // Stage
+      const stage = document.createElement("div");
+      stage.classList.add("lamp-stage");
+
+      const imageLight = document.createElement("img");
+      imageLight.classList.add("lamp-image");
+      imageLight.src = p.imageLight;
+      imageLight.alt = p.title;
+
+      const imageDark = document.createElement("img");
+      imageDark.classList.add("lamp-image__dark");
+      imageDark.src = p.imageDark;
+      imageDark.alt = p.title;
+
+      // Info
+      const info = document.createElement("div");
+      info.classList.add("lamp-info");
+
+      const title = document.createElement("p");
+      title.classList.add("lamp-title");
+      title.textContent = p.title;
+
+      const price = document.createElement("div");
+      price.classList.add("lamp-price");
+      price.textContent = `${p.price},-`;
+
+      stage.append(imageLight, imageDark);
+      info.append(title, price);
+      cardLink.append(stage, info);
+
+      fragment.append(cardLink);
+    });
+
+  contentContainer.append(fragment);
+}
+
+getProducts();
+
+// Filter
+const filterButtons = document.querySelectorAll(".filter-button");
+
+let allProducts = [];
+let activeFilter = "all";
+
+async function getProducts() {
+  try {
+    const response = await fetch("http://localhost:3000/api/products");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    allProducts = await response.json();
+
+    applyFilter();
+  } catch (error) {
+    console.error("Feil i getProducts():", error);
+    const errorMessage = document.createElement("div");
+    errorMessage.classList.add("error-message");
+    errorMessage.textContent = "Det har skjedd en feil. Vennligst prøv igjen.";
+    contentContainer.append(errorMessage);
+  }
+}
+
+function normalize(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase();
+}
+
+function applyFilter() {
+  const view = activeFilter === "all" ? allProducts : allProducts.filter((p) => normalize(p.type) === normalize(activeFilter));
+
+  renderProducts(view);
+}
+
+function setActiveButton(clickedBtn) {
+  filterButtons.forEach((btn) => {
+    btn.classList.remove("filter-button-active");
+    btn.classList.add("filter-button");
+  });
+
+  clickedBtn.classList.add("filter-button-active");
+  clickedBtn.classList.remove("filter-button");
+}
+
+filterButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    activeFilter = btn.dataset.filter;
+    setActiveButton(btn);
+    applyFilter();
+  });
+});
+
+function renderProducts(products) {
+  contentContainer.textContent = "";
+  contentContainer.classList.add("content-container");
+
+  const fragment = document.createDocumentFragment();
+
+  products
+    .sort((a, b) => a.index - b.index)
+    .forEach((p) => {
+      // Hele kortet er en <a>
+      const cardLink = document.createElement("a");
+      cardLink.classList.add("lamp-container", `lamp-${p.index + 1}`);
+      cardLink.dataset.index = p.index;
+      cardLink.dataset.type = p.type;
+
+      // Tilpass href til din produktside:
+      cardLink.href = `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
 
       const stage = document.createElement("div");
       stage.classList.add("lamp-stage");
@@ -236,9 +344,9 @@ function renderProducts(products) {
 
       stage.append(imageLight, imageDark);
       info.append(title, price);
-      link.append(stage, info);
-      wrapper.append(link);
-      fragment.append(wrapper);
+      cardLink.append(stage, info);
+
+      fragment.append(cardLink);
     });
 
   contentContainer.append(fragment);

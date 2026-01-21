@@ -27,7 +27,7 @@ body {
 .header {
   width: 100%;
   padding: 1.5rem 3rem;
-  margin-bottom: 4rem;
+  margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -80,7 +80,8 @@ body {
 }
 
 .navbar-links:hover {
-  background-color: var(--header-button-hover);
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
 }
 
 .navbar-icons {
@@ -242,11 +243,13 @@ input:checked + .slider:before {
 
 /* General styling for the lamp containers */
 .content-container {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-wrap: wrap;
   gap: 4rem;
   padding: 0 3rem;
+  border: 1px solid red;
 }
 
 .main-container {
@@ -259,30 +262,14 @@ input:checked + .slider:before {
 }
 
 .lamp-container {
-  margin-top: var(--spacing-medium);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  gap: 1rem;
   width: 17rem;
   height: 30rem;
   position: relative;
-}
-
-.lamp-1,
-.lamp-2,
-.lamp-3,
-.lamp-4,
-.lamp-5,
-.lamp-6,
-.lamp-7,
-.lamp-8,
-.lamp-9,
-.lamp-10 {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
+  text-decoration: none;
+  color: inherit;
 }
 
 .lamp-info {
@@ -293,19 +280,22 @@ input:checked + .slider:before {
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
+  overflow: hidden;
 }
 
 .lamp-image,
 .lamp-image__dark {
-  width: 17rem;
-  height: 22rem;
+  width: 16rem;
+  height: 18.75rem;
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: opacity 800ms ease-in-out;
-  will-change: opacity;
+  transition:
+    opacity 800ms ease-in-out,
+    transform 300ms ease;
+  transform: scale(1);
 }
 
 .lamp-image {
@@ -322,6 +312,11 @@ body.is-dark .lamp-image {
 
 body.is-dark .lamp-image__dark {
   opacity: 1;
+}
+
+.lamp-container:hover .lamp-image,
+.lamp-container:hover .lamp-image__dark {
+  transform: scale(1.1);
 }
 
 .lamp-title,
@@ -502,6 +497,33 @@ body.is-dark .lamp-image__dark {
 
 .checkout-book-title {
   width: 30%;
+}
+
+/* Filter */
+.section-headline {
+  margin-bottom: 2rem;
+}
+
+.filter {
+  display: flex;
+  gap: 1rem;
+}
+
+.filter-button:hover {
+  background-color: var(--header-button-hover);
+}
+
+.filter-button {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.filter-button-active {
+  padding: 0.5rem 0.75rem;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  font-weight: bold;
+  border-radius: 0.5rem;
 }
 
 /* footer styling */
