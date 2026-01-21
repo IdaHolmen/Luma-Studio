@@ -38,8 +38,8 @@ const headerContainer = document.querySelector(".header");
 const displayCheckoutMenu = () => {
   checkoutMenu.style.display = checkoutMenu.style.display === "block" ? "none" : "block";
 
-  const lampContainers = document.querySelectorAll(".lamp__container");
-  lampContainers.forEach((lampContainer) => lampContainer.classList.toggle("lamp__container--blurred"));
+  const lampContainers = document.querySelectorAll(".lamp-container");
+  lampContainers.forEach((lampContainer) => lampContainer.classList.toggle("lamp-container--blurred"));
 
   headerContainer.classList.toggle("header--blurred");
 };
@@ -49,8 +49,8 @@ checkoutMenuButton.addEventListener("click", displayCheckoutMenu);
 const crossOutMenu = () => {
   checkoutMenu.style.display = checkoutMenu.style.display === "block" ? "none" : "block";
 
-  const lampContainers = document.querySelectorAll(".lamp__container");
-  lampContainers.forEach((lampContainer) => lampContainer.classList.toggle("lamp__container--blurred"));
+  const lampContainers = document.querySelectorAll(".lamp-container");
+  lampContainers.forEach((lampContainer) => lampContainer.classList.toggle("lamp-container--blurred"));
 
   headerContainer.classList.toggle("header--blurred");
 };
@@ -64,7 +64,7 @@ const addContent = () => {
 
   cartButtons.forEach((cartButton) => {
     cartButton.addEventListener("click", () => {
-      const lampContainer = cartButton.closest(".lamp__container");
+      const lampContainer = cartButton.closest(".lamp-container");
 
       //Creating the div dynamically!
       const newDiv = document.createElement("div");
@@ -74,13 +74,13 @@ const addContent = () => {
       lampImage.classList.add("image-element-checkout");
       newDiv.appendChild(lampImage);
 
-      const lampTitleText = lampContainer.querySelector(".lamp__title").textContent;
+      const lampTitleText = lampContainer.querySelector(".lamp-title").textContent;
       const titleElement = document.createElement("p");
       titleElement.classList.add("checkout-lamp-title");
       titleElement.textContent = lampTitleText;
       newDiv.appendChild(titleElement);
 
-      const lampPrice = lampContainer.querySelector(".lamp__price").textContent;
+      const lampPrice = lampContainer.querySelector(".lamp-price").textContent;
       const priceElement = document.createElement("p");
       priceElement.classList.add("checkout-lamp-price");
       priceElement.textContent = lampPrice;
@@ -158,12 +158,6 @@ const updateTotal = () => {
 //BADGE
 const badge = document.querySelector(".badge");
 
-//Makes sure that badge is not visible when page is loaded
-document.addEventListener("DOMContentLoaded", () => {
-  badge.style.display = "none";
-  updateBadgeCount();
-});
-
 // If item is added to cart it displays the badge and changes textContent accordingly
 const updateBadgeCount = () => {
   const cartItems = document.querySelectorAll(".checkout-container-flex");
@@ -178,32 +172,76 @@ const updateBadgeCount = () => {
   }
 };
 
-async function renderProducts() {
-  const res = await fetch("http://localhost:3000/api/products");
-  const products = await res.json();
+const contentContainer = document.querySelector("#products");
 
-  const container = document.querySelector("#products");
+async function getProducts() {
+  try {
+    const response = await fetch("http://localhost:3000/api/products");
 
-  // container.innerHTML = products
-  //   .sort((a, b) => a.index - b.index)
-  //   .map(
-  //     (p) => `
-  //     <div class="lamp__container" data-index="${p.index}" data-type="${p.type}">
-  //       <a class="lamp-${p.index + 1}">
-  //         <div class="lamp-stage">
-  //           <img src="${p.imageLight}" alt="${p.title}" class="lamp-image" />
-  //           <img src="${p.imageDark}" alt="${p.title}" class="lamp-image__dark" />
-  //         </div>
-  //         <div class="lamp__info">
-  //           <div class="lamp__price">${p.price},-</div>
-  //           <p class="lamp__title">${p.title}</p>
-  //           <button class="add__button">Legg i handlevogn</button>
-  //         </div>
-  //       </a>
-  //     </div>
-  //   `
-  //   )
-  //   .join("");
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} ${response.statusText}`);
+    }
+
+    const products = await response.json();
+    renderProducts(products);
+  } catch (error) {
+    console.error("Feil i getProducts():", error);
+
+    const errorMessage = document.createElement("div");
+    errorMessage.classList.add("error-message");
+    errorMessage.textContent = "Det har skjedd en feil. Vennligst prøv igjen.";
+    contentContainer.append(errorMessage);
+  }
 }
 
-renderProducts();
+function renderProducts(products) {
+  contentContainer.textContent = "";
+
+  const fragment = document.createDocumentFragment();
+
+  products
+    .sort((a, b) => a.index - b.index)
+    .forEach((p) => {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("lamp-container");
+      wrapper.dataset.index = p.index;
+      wrapper.dataset.type = p.type;
+
+      const link = document.createElement("a");
+      link.classList.add(`lamp-${p.index + 1}`);
+
+      const stage = document.createElement("div");
+      stage.classList.add("lamp-stage");
+
+      const imageLight = document.createElement("img");
+      imageLight.classList.add("lamp-image");
+      imageLight.src = p.imageLight;
+      imageLight.alt = p.title;
+
+      const imageDark = document.createElement("img");
+      imageDark.classList.add("lamp-image__dark");
+      imageDark.src = p.imageDark;
+      imageDark.alt = p.title;
+
+      const info = document.createElement("div");
+      info.classList.add("lamp-info");
+
+      const price = document.createElement("div");
+      price.classList.add("lamp-price");
+      price.textContent = `${p.price},-`;
+
+      const title = document.createElement("p");
+      title.classList.add("lamp-title");
+      title.textContent = p.title;
+
+      stage.append(imageLight, imageDark);
+      info.append(title, price);
+      link.append(stage, info);
+      wrapper.append(link);
+      fragment.append(wrapper);
+    });
+
+  contentContainer.append(fragment);
+}
+
+getProducts();

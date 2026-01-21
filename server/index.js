@@ -35,18 +35,6 @@ app.get("/health", async (req, res) => {
   }
 });
 
-app.get("/debug/dbs", async (req, res) => {
-  try {
-    await client.connect();
-    const admin = client.db().admin();
-    const { databases } = await admin.listDatabases();
-    res.json(databases.map((d) => d.name));
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: String(err) });
-  }
-});
-
 app.get("/api/products", async (req, res) => {
   try {
     await client.connect();

@@ -26,13 +26,15 @@ body {
 
 .header {
   width: 100%;
-  padding: 1.5rem 0;
+  padding: 1.5rem 3rem;
+  margin-bottom: 4rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 1.5rem;
-  background-color: var(--primary-color);
+  background-color: var(--header-button-hover);
   color: var(--secondary-color);
+  border-radius: 0 0 1rem 1rem;
 }
 
 .navbar {
@@ -103,7 +105,7 @@ body {
   position: absolute;
   bottom: 0.2rem;
   right: 0.3rem;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   font-size: 0.7rem;
@@ -256,8 +258,7 @@ input:checked + .slider:before {
   gap: 2rem;
 }
 
-.lamp__container {
-  cursor: pointer;
+.lamp-container {
   margin-top: var(--spacing-medium);
   display: flex;
   flex-direction: column;
@@ -284,7 +285,7 @@ input:checked + .slider:before {
   align-items: center;
 }
 
-.lamp__info {
+.lamp-info {
   width: 17rem;
 }
 
@@ -323,14 +324,15 @@ body.is-dark .lamp-image__dark {
   opacity: 1;
 }
 
-.lamp__price {
-  font-size: var(--font-size-sm-medium);
-  font-weight: 600;
-  display: flex;
+.lamp-title,
+.lamp-price {
+  font-weight: bold;
 }
 
-.lamp__title {
-  font-size: var(--font-size-small);
+.error-message {
+  font-size: 1.5rem;
+  color: red;
+  font-weight: bold;
 }
 
 .add__button {
@@ -383,7 +385,7 @@ body.is-dark .lamp-image__dark {
   display: flex;
 }
 
-.lamp__container--blurred {
+.lamp-container--blurred {
   filter: blur(0.3rem);
   cursor: pointer;
   margin-top: var(--spacing-large);
@@ -505,10 +507,11 @@ body.is-dark .lamp-image__dark {
 /* footer styling */
 footer {
   width: 100%;
-  padding: var(--spacing-medium);
+  padding: 2rem 3rem;
   margin-top: 4rem;
-  background-color: var(--secondary-color);
-  color: var(--primary-color);
+  background-color: var(--header-button-hover);
+  color: var(--secondary-color);
+  border-radius: 1rem 1rem 0 0;
 }
 
 .footer-content-wrapper {
@@ -535,7 +538,7 @@ footer {
   display: flex;
   flex-direction: row;
   gap: 0.3rem;
-  color: var(--primary-color);
+  color: var(--secondary-color);
 }
 
 .footer-links {
@@ -564,5 +567,5 @@ footer {
 
 .copyright-message {
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 3rem;
 }
