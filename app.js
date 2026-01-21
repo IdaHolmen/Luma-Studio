@@ -249,7 +249,7 @@ function renderProducts(products) {
 getProducts();
 
 // Filter
-const filterButtons = document.querySelectorAll(".filter-button");
+const filterButtons = document.querySelectorAll(".filter button");
 
 let allProducts = [];
 let activeFilter = "all";
@@ -309,13 +309,11 @@ function renderProducts(products) {
   products
     .sort((a, b) => a.index - b.index)
     .forEach((p) => {
-      // Hele kortet er en <a>
       const cardLink = document.createElement("a");
       cardLink.classList.add("lamp-container", `lamp-${p.index + 1}`);
       cardLink.dataset.index = p.index;
       cardLink.dataset.type = p.type;
 
-      // Tilpass href til din produktside:
       cardLink.href = `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
 
       const stage = document.createElement("div");
