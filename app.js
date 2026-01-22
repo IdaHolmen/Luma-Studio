@@ -172,10 +172,39 @@ const updateBadgeCount = () => {
   }
 };
 
-// FETCHING PRODUCTS
+// Filter
+const filterButtons = document.querySelectorAll(".filter button");
+let allProducts = [];
+let activeFilter = "all";
+
+function normalize(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase();
+}
+
+function applyFilter() {
+  const view =
+    activeFilter === "all"
+      ? allProducts
+      : allProducts.filter((p) => {
+          const cats = Array.isArray(p.category) ? p.category : [p.category];
+          return cats.map(normalize).includes(normalize(activeFilter));
+        });
+
+  renderProducts(view);
+}
+
+// GET PRODUCTS
 const contentContainer = document.querySelector("#products");
+const bestsellersContainer = document.querySelector("#bestsellers");
+
+const hasProductsGrid = !!contentContainer;
+const hasBestsellersGrid = !!bestsellersContainer;
 
 async function getProducts() {
+  if (!hasProductsGrid) return;
+
   try {
     const response = await fetch("http://localhost:3000/api/products");
     if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`);
@@ -185,6 +214,7 @@ async function getProducts() {
   } catch (error) {
     console.error("Feil i getProducts():", error);
 
+    if (!hasProductsGrid) return;
     const errorMessage = document.createElement("div");
     errorMessage.classList.add("error-message");
     errorMessage.textContent = "Det har skjedd en feil. Vennligst prøv igjen.";
@@ -193,6 +223,7 @@ async function getProducts() {
 }
 
 function renderProducts(products) {
+  if (!hasProductsGrid) return;
   contentContainer.textContent = "";
   contentContainer.classList.add("content-container");
 
@@ -242,32 +273,6 @@ function renderProducts(products) {
   contentContainer.append(fragment);
 }
 
-getProducts();
-
-// Filter
-const filterButtons = document.querySelectorAll(".filter button");
-
-let allProducts = [];
-let activeFilter = "all";
-
-function normalize(value) {
-  return String(value ?? "")
-    .trim()
-    .toLowerCase();
-}
-
-function applyFilter() {
-  const view =
-    activeFilter === "all"
-      ? allProducts
-      : allProducts.filter((p) => {
-          const cats = Array.isArray(p.category) ? p.category : [p.category];
-          return cats.map(normalize).includes(normalize(activeFilter));
-        });
-
-  renderProducts(view);
-}
-
 function setActiveButton(clickedBtn) {
   filterButtons.forEach((btn) => {
     btn.classList.remove("filter-button-active");
@@ -286,14 +291,7 @@ filterButtons.forEach((btn) => {
   });
 });
 
-const bestsellersContainer = document.querySelector("#bestsellers");
-
-function normalize(value) {
-  return String(value ?? "")
-    .trim()
-    .toLowerCase();
-}
-
+// BESTSELLERS
 function hasCategory(product, category) {
   const cats = Array.isArray(product.category) ? product.category : [product.category];
   return cats.map(normalize).includes(normalize(category));
@@ -301,7 +299,7 @@ function hasCategory(product, category) {
 
 function renderProductCards(products, container) {
   container.textContent = "";
-  container.classList.add("content-container");
+  container.classList.add("bestseller-container");
 
   const fragment = document.createDocumentFragment();
 
@@ -347,16 +345,25 @@ function renderProductCards(products, container) {
 }
 
 async function getBestsellers() {
+  if (!hasBestsellersGrid) return;
+
   try {
     const response = await fetch("http://localhost:3000/api/products");
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
     const products = await response.json();
-
     const bestsellers = products.filter((p) => hasCategory(p, "bestselger"));
+
+    renderProductCards(bestsellers.slice(0, 4), bestsellersContainer);
   } catch (e) {
     console.error(e);
   }
 }
 
-getBestsellers();
+if (hasProductsGrid) {
+  getProducts();
+}
+
+if (hasBestsellersGrid) {
+  getBestsellers();
+}

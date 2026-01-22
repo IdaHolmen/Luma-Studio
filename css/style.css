@@ -166,6 +166,10 @@ body {
   padding-bottom: 0.75rem;
 }
 
+.bestseller-section {
+  padding: 0 3rem;
+}
+
 .selections {
   width: 100%;
   font-size: 1.125rem;
@@ -257,6 +261,14 @@ input:checked + .slider:before {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 4rem;
   padding: 0 3rem;
+  align-items: start;
+}
+
+.bestseller-container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4rem;
   align-items: start;
 }
 
