@@ -90,7 +90,7 @@
       </header>
 
       <main class="main-container">
-        <!-- CHECKOUT  -->
+        <!-- Checkout  -->
         <div class="checkout-container">
           <div class="checkout-container__content">
             <img class="exit-icon" src="./assets/icons/exit-icon.svg" alt="Leave register" />
@@ -105,22 +105,30 @@
           </div>
         </div>
 
-        <!-- HERO -->
-        <section class="hero-section">
-          <div class="hero-title-container">
-            <h1 class="hero-title">Der lys og form finner balanse</h1>
-          </div>
+        <div class="selection-container">
+          <h1 class="section-headline">Produkter</h1>
 
-          <div class="hero-button-container">
-            <a href="./products.html" class="call-to-action-button">Utforsk vår kolleksjon</a>
+          <div class="selections">
+            <div class="filter">
+              <button class="filter-button-active" data-filter="all" type="button">Alle lamper</button>
+              <button class="filter-button" data-filter="Bordlampe" type="button">Bordlampe</button>
+              <button class="filter-button" data-filter="Taklampe" type="button">Taklampe</button>
+              <button class="filter-button" data-filter="Stålampe" type="button">Stålampe</button>
+              <button class="filter-button" data-filter="Bestselger" type="button">Bestselgere</button>
+            </div>
+            <div class="toggle-holder">
+              <label for="light">Lys</label>
+              <div class="component" data-component-name="toggle-button">
+                <label class="switch">
+                  <input id="toggle" type="checkbox" />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
           </div>
-        </section>
+        </div>
 
-        <!-- BESTSELLERS -->
-        <section class="bestseller-section">
-          <h2 class="section-headline">Bestselgere</h2>
-          <div class="content-container" id="bestsellers"></div>
-        </section>
+        <section class="content-container" id="products"></section>
       </main>
 
       <footer>
