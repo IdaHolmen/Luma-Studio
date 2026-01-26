@@ -27,7 +27,6 @@ body {
 .header {
   width: 100%;
   padding: 1.5rem 3rem;
-  margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -660,10 +659,10 @@ footer {
 
 .product-info-container {
   width: 50%;
-  padding: 1.5rem 3rem;
+  padding: 1rem 3rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .quantity-container {
