@@ -258,8 +258,8 @@ input:checked + .slider:before {
 .content-container {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 4rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3rem;
   padding: 0 3rem;
   align-items: start;
 }
@@ -267,7 +267,7 @@ input:checked + .slider:before {
 .bestseller-container {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4rem;
   align-items: start;
 }
@@ -282,17 +282,33 @@ input:checked + .slider:before {
 
 .lamp-container {
   display: flex;
+  padding-bottom: 1rem;
   flex-direction: column;
   gap: 1rem;
   width: 100%;
-  height: 30rem;
+  min-height: 43rem;
   position: relative;
   text-decoration: none;
   color: inherit;
+  background-color: rgb(239, 239, 239);
+  transition:
+    opacity 800ms ease-in-out,
+    transform 300ms ease;
+  transform: scale(1);
+  border-radius: 0.5rem;
+}
+
+.lamp-container:hover {
+  transform: scale(1.02);
 }
 
 .lamp-info {
-  width: 17rem;
+  width: 100%;
+  height: 15rem;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .lamp-stage {
@@ -301,19 +317,23 @@ input:checked + .slider:before {
   aspect-ratio: 3 / 4;
 }
 
-.lamp-image,
-.lamp-image__dark {
-  width: 16rem;
-  height: 18.75rem;
-  position: absolute;
-  inset: 0;
+.info-wrapper {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.lamp-image,
+.lamp-image__dark {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
   object-fit: contain;
-  transition:
-    opacity 800ms ease-in-out,
-    transform 300ms ease;
-  transform: scale(1);
+  border-radius: 0.5rem 0.5rem 0 0;
 }
 
 .lamp-image {
@@ -332,15 +352,29 @@ body.is-dark .lamp-image__dark {
   opacity: 1;
 }
 
-.lamp-container:hover .lamp-image,
-.lamp-container:hover .lamp-image__dark {
-  transform: scale(1.1);
-}
-
 .error-message {
   font-size: 1.5rem;
   color: red;
   font-weight: bold;
+}
+
+.button-wrapper {
+  width: 100%;
+  height: 3rem;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.view-product {
+  padding: 0.5rem 1rem;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  border-radius: 0.25rem;
+}
+
+.view-product:hover {
+  background-color: #546386;
 }
 
 .add__button {
@@ -543,7 +577,7 @@ body.is-dark .lamp-image__dark {
 footer {
   width: 100%;
   padding: 2rem 3rem;
-  margin-top: 2rem;
+  margin-top: 4rem;
   background-color: var(--header-button-hover);
   color: var(--secondary-color);
   border-radius: 1rem 1rem 0 0;
@@ -603,4 +637,84 @@ footer {
 .copyright-message {
   text-align: center;
   margin-top: 3rem;
+}
+
+.product-main-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+.product-image-container {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-info-container {
+  width: 50%;
+  padding: 1.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.quantity-container {
+  width: 100%;
+  height: 5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1px solid yellow;
+}
+
+/* NUMERIC STEPPER */
+.numeric-stepper__container {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.numeric-element {
+  margin-left: 20px;
+  margin-right: 20px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 0.25rem;
+}
+
+.numeric-button__reduce {
+  background: var(--secondary-color);
+  width: 50px;
+  height: 50px;
+  color: var(--primary-color);
+  border-radius: 0.25rem;
+}
+
+.numeric-button__increment {
+  background: var(--secondary-color);
+  width: 50px;
+  height: 50px;
+  color: var(--primary-color);
+  border-radius: 0.25rem;
+}
+
+.numeric-button__reduce:hover,
+.numeric-button__increment:hover {
+  background: #546386;
+}
+
+.numeric-button__reduce:active,
+.numeric-button__increment:active {
+  background: #2a3143;
 }

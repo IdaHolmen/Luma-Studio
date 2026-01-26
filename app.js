@@ -46,86 +46,86 @@ const displayCheckoutMenu = () => {
 checkoutMenuButton.addEventListener("click", displayCheckoutMenu);
 
 //crosses out menu
-const crossOutMenu = () => {
-  checkoutMenu.style.display = checkoutMenu.style.display === "block" ? "none" : "block";
+// const crossOutMenu = () => {
+//   checkoutMenu.style.display = checkoutMenu.style.display === "block" ? "none" : "block";
 
-  const lampContainers = document.querySelectorAll(".lamp-container");
-  lampContainers.forEach((lampContainer) => lampContainer.classList.toggle("lamp-container--blurred"));
+//   const lampContainers = document.querySelectorAll(".lamp-container");
+//   lampContainers.forEach((lampContainer) => lampContainer.classList.toggle("lamp-container--blurred"));
 
-  headerContainer.classList.toggle("header--blurred");
-};
-crossOutMenuButton.addEventListener("click", crossOutMenu);
+//   headerContainer.classList.toggle("header--blurred");
+// };
+// crossOutMenuButton.addEventListener("click", crossOutMenu);
 
 //ADD CONTENT TO CHECKOUT
 
-const addContent = () => {
-  const cartButtons = document.querySelectorAll(".add__button");
-  const contentContainer = document.querySelector(".checkout-container-main-content");
+// const addContent = () => {
+//   const cartButtons = document.querySelectorAll(".add__button");
+//   const contentContainer = document.querySelector(".checkout-container-main-content");
 
-  cartButtons.forEach((cartButton) => {
-    cartButton.addEventListener("click", () => {
-      const lampContainer = cartButton.closest(".lamp-container");
+//   cartButtons.forEach((cartButton) => {
+//     cartButton.addEventListener("click", () => {
+//       const lampContainer = cartButton.closest(".lamp-container");
 
-      //Creating the div dynamically!
-      const newDiv = document.createElement("div");
-      newDiv.classList.add("checkout-container-flex");
+//       //Creating the div dynamically!
+//       const newDiv = document.createElement("div");
+//       newDiv.classList.add("checkout-container-flex");
 
-      const lampImage = lampContainer.querySelector(".lamp-image").cloneNode(true);
-      lampImage.classList.add("image-element-checkout");
-      newDiv.appendChild(lampImage);
+//       const lampImage = lampContainer.querySelector(".lamp-image").cloneNode(true);
+//       lampImage.classList.add("image-element-checkout");
+//       newDiv.appendChild(lampImage);
 
-      const lampTitleText = lampContainer.querySelector(".lamp-title").textContent;
-      const titleElement = document.createElement("p");
-      titleElement.classList.add("checkout-lamp-title");
-      titleElement.textContent = lampTitleText;
-      newDiv.appendChild(titleElement);
+//       const lampTitleText = lampContainer.querySelector(".lamp-title").textContent;
+//       const titleElement = document.createElement("p");
+//       titleElement.classList.add("checkout-lamp-title");
+//       titleElement.textContent = lampTitleText;
+//       newDiv.appendChild(titleElement);
 
-      const lampPrice = lampContainer.querySelector(".lamp-price").textContent;
-      const priceElement = document.createElement("p");
-      priceElement.classList.add("checkout-lamp-price");
-      priceElement.textContent = lampPrice;
-      newDiv.appendChild(priceElement);
+//       const lampPrice = lampContainer.querySelector(".lamp-price").textContent;
+//       const priceElement = document.createElement("p");
+//       priceElement.classList.add("checkout-lamp-price");
+//       priceElement.textContent = lampPrice;
+//       newDiv.appendChild(priceElement);
 
-      const quantityDiv = document.createElement("div");
-      quantityDiv.classList.add("quantity-controls");
+//       const quantityDiv = document.createElement("div");
+//       quantityDiv.classList.add("quantity-controls");
 
-      const decrementButton = document.createElement("button");
-      decrementButton.textContent = "-";
-      decrementButton.onclick = () => updateQuantity(newDiv, -1);
+//       const decrementButton = document.createElement("button");
+//       decrementButton.textContent = "-";
+//       decrementButton.onclick = () => updateQuantity(newDiv, -1);
 
-      const incrementButton = document.createElement("button");
-      incrementButton.textContent = "+";
-      incrementButton.onclick = () => updateQuantity(newDiv, 1);
+//       const incrementButton = document.createElement("button");
+//       incrementButton.textContent = "+";
+//       incrementButton.onclick = () => updateQuantity(newDiv, 1);
 
-      const quantityDisplay = document.createElement("span");
-      quantityDisplay.textContent = "1";
-      quantityDisplay.classList.add("quantity-display");
+//       const quantityDisplay = document.createElement("span");
+//       quantityDisplay.textContent = "1";
+//       quantityDisplay.classList.add("quantity-display");
 
-      quantityDiv.appendChild(decrementButton);
-      quantityDiv.appendChild(quantityDisplay);
-      quantityDiv.appendChild(incrementButton);
+//       quantityDiv.appendChild(decrementButton);
+//       quantityDiv.appendChild(quantityDisplay);
+//       quantityDiv.appendChild(incrementButton);
 
-      newDiv.appendChild(quantityDiv);
+//       newDiv.appendChild(quantityDiv);
 
-      const deleteLampButton = document.createElement("button");
-      deleteLampButton.classList.add("delete-button");
-      deleteLampButton.textContent = "Remove?";
-      deleteLampButton.addEventListener("click", (event) => {
-        event.target.parentElement.remove();
-        updateTotal();
-        updateBadgeCount();
-      });
+//       const deleteLampButton = document.createElement("button");
+//       deleteLampButton.classList.add("delete-button");
+//       deleteLampButton.textContent = "Remove?";
+//       deleteLampButton.addEventListener("click", (event) => {
+//         event.target.parentElement.remove();
+//         updateTotal();
+//         updateBadgeCount();
+//       });
 
-      newDiv.appendChild(deleteLampButton);
+//       newDiv.appendChild(deleteLampButton);
 
-      contentContainer.appendChild(newDiv);
-      updateTotal();
-      updateBadgeCount();
-      updateQuantity();
-    });
-  });
-};
-addContent();
+//       contentContainer.appendChild(newDiv);
+//       updateTotal();
+//       updateBadgeCount();
+//       updateQuantity();
+//     });
+//   });
+// };
+// addContent();
 
 // QUANTITY
 const updateQuantity = (cartItem, change) => {
@@ -238,6 +238,9 @@ function renderProducts(products) {
       cardLink.dataset.category = p.category;
 
       cardLink.href = `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
+      const isRo = p.slug === "ro-bordlampe" || (p.title && p.title.toLowerCase().includes("ro"));
+
+      cardLink.href = isRo ? "ro.html" : `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
 
       const stage = document.createElement("div");
       stage.classList.add("lamp-stage");
@@ -306,9 +309,12 @@ function renderProductCards(products, container) {
   products
     .sort((a, b) => a.index - b.index)
     .forEach((p) => {
-      const cardLink = document.createElement("a");
-      cardLink.classList.add("lamp-container", `lamp-${p.index + 1}`);
+      const cardLink = document.createElement("div");
+      cardLink.classList.add("lamp-container");
       cardLink.href = `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
+      const isRo = p.slug === "ro-bordlampe" || (p.title && p.title.toLowerCase().includes("ro"));
+
+      cardLink.href = isRo ? "ro.html" : `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
 
       const stage = document.createElement("div");
       stage.classList.add("lamp-stage");
@@ -326,16 +332,32 @@ function renderProductCards(products, container) {
       const info = document.createElement("div");
       info.classList.add("lamp-info");
 
-      const title = document.createElement("p");
+      const title = document.createElement("h3");
       title.classList.add("lamp-title");
       title.textContent = p.title;
 
-      const price = document.createElement("div");
+      const description = document.createElement("p");
+      description.classList.add("lamp-description");
+      description.textContent = p.description;
+
+      const price = document.createElement("h4");
       price.classList.add("lamp-price");
       price.textContent = `${p.price},-`;
 
+      const infoWrapper = document.createElement("div");
+      const buttonWrapper = document.createElement("div");
+      const viewProduct = document.createElement("a");
+
+      infoWrapper.classList.add("info-wrapper");
+      buttonWrapper.classList.add("button-wrapper");
+      viewProduct.classList.add("view-product");
+
+      viewProduct.textContent = "Se produkt";
+
       stage.append(imageLight, imageDark);
-      info.append(title, price);
+      infoWrapper.append(title, description, price);
+      info.append(infoWrapper, buttonWrapper);
+      buttonWrapper.append(viewProduct);
       cardLink.append(stage, info);
 
       fragment.append(cardLink);
@@ -367,3 +389,82 @@ if (hasProductsGrid) {
 if (hasBestsellersGrid) {
   getBestsellers();
 }
+
+// PRODUCT PAGE
+(async function initRoProductPage() {
+  const productInfoContainer = document.querySelector(".product-info-container");
+  if (!productInfoContainer) return;
+
+  const PRODUCT_SLUG = "ro-bordlampe";
+
+  try {
+    const res = await fetch("http://localhost:3000/api/products");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const products = await res.json();
+
+    const product = products.find((p) => p.slug === PRODUCT_SLUG) || products.find((p) => (p.title || "").toLowerCase().includes("ro"));
+
+    if (!product) {
+      productInfoContainer.textContent = "Fant ikke produktet.";
+      return;
+    }
+
+    productInfoContainer.textContent = "";
+
+    const productHeadline = document.createElement("h1");
+    productHeadline.classList.add("product-headline");
+    productHeadline.textContent = product.title;
+
+    const description = document.createElement("p");
+    description.classList.add("product-description");
+    description.textContent = product.description;
+
+    const price = document.createElement("p");
+    price.classList.add("product-price");
+    price.textContent = `${product.price},-`;
+
+    const stock = document.createElement("p");
+    stock.classList.add("product-inventory");
+    stock.textContent = Number(product.inventory) > 0 ? `På lager: ${product.inventory}` : "Utsolgt";
+
+    const quantityContainer = document.createElement("div");
+    const incrementButton = document.createElement("button");
+    const reduceButton = document.createElement("button");
+    const numberContainer = document.createElement("div");
+
+    incrementButton.classList.add("numeric-button__increment");
+    reduceButton.classList.add("numeric-button__reduce");
+    numberContainer.classList.add("numeric-element");
+
+    const updateNumber = (delta) => {
+      let currentNumber = parseInt(numberContainer.textContent, 10);
+      currentNumber += delta;
+      numberContainer.textContent = currentNumber;
+    };
+
+    incrementButton.textContent = "+";
+    reduceButton.textContent = "-";
+    numberContainer.textContent = "0";
+
+    incrementButton.addEventListener("click", () => updateNumber(1));
+    reduceButton.addEventListener("click", () => updateNumber(-1));
+
+    quantityContainer.classList.add("quantity-container");
+    quantityContainer.append(reduceButton, numberContainer, incrementButton);
+
+    const addButton = document.createElement("button");
+    addButton.classList.add("add__button");
+    addButton.type = "button";
+    addButton.textContent = "Legg i handlekurv";
+
+    addButton.addEventListener("click", () => {
+      console.log("Legger i handlekurv:", product.title);
+    });
+
+    productInfoContainer.append(productHeadline, description, price, stock, quantityContainer, addButton);
+  } catch (err) {
+    console.error("Feil ved henting av produkt:", err);
+    productInfoContainer.textContent = "Kunne ikke laste produktet akkurat nå.";
+  }
+})();
