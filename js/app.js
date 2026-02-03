@@ -46,86 +46,86 @@ const displayCheckoutMenu = () => {
 checkoutMenuButton.addEventListener("click", displayCheckoutMenu);
 
 //crosses out menu
-// const crossOutMenu = () => {
-//   checkoutMenu.style.display = checkoutMenu.style.display === "block" ? "none" : "block";
+const crossOutMenu = () => {
+  checkoutMenu.style.display = checkoutMenu.style.display === "block" ? "none" : "block";
 
-//   const lampContainers = document.querySelectorAll(".lamp-container");
-//   lampContainers.forEach((lampContainer) => lampContainer.classList.toggle("lamp-container--blurred"));
+  const lampContainers = document.querySelectorAll(".lamp-container");
+  lampContainers.forEach((lampContainer) => lampContainer.classList.toggle("lamp-container--blurred"));
 
-//   headerContainer.classList.toggle("header--blurred");
-// };
-// crossOutMenuButton.addEventListener("click", crossOutMenu);
+  headerContainer.classList.toggle("header--blurred");
+};
+crossOutMenuButton.addEventListener("click", crossOutMenu);
 
-//ADD CONTENT TO CHECKOUT
+// ADD CONTENT TO CHECKOUT
 
-// const addContent = () => {
-//   const cartButtons = document.querySelectorAll(".add__button");
-//   const contentContainer = document.querySelector(".checkout-container-main-content");
+const addContent = () => {
+  const cartButtons = document.querySelectorAll(".add__button");
+  const contentContainer = document.querySelector(".checkout-container-main-content");
 
-//   cartButtons.forEach((cartButton) => {
-//     cartButton.addEventListener("click", () => {
-//       const lampContainer = cartButton.closest(".lamp-container");
+  cartButtons.forEach((cartButton) => {
+    cartButton.addEventListener("click", () => {
+      const lampContainer = cartButton.closest(".lamp-container");
 
-//       //Creating the div dynamically!
-//       const newDiv = document.createElement("div");
-//       newDiv.classList.add("checkout-container-flex");
+      //Creating the div dynamically!
+      const newDiv = document.createElement("div");
+      newDiv.classList.add("checkout-container-flex");
 
-//       const lampImage = lampContainer.querySelector(".lamp-image").cloneNode(true);
-//       lampImage.classList.add("image-element-checkout");
-//       newDiv.appendChild(lampImage);
+      const lampImage = lampContainer.querySelector(".lamp-image").cloneNode(true);
+      lampImage.classList.add("image-element-checkout");
+      newDiv.appendChild(lampImage);
 
-//       const lampTitleText = lampContainer.querySelector(".lamp-title").textContent;
-//       const titleElement = document.createElement("p");
-//       titleElement.classList.add("checkout-lamp-title");
-//       titleElement.textContent = lampTitleText;
-//       newDiv.appendChild(titleElement);
+      const lampTitleText = lampContainer.querySelector(".lamp-title").textContent;
+      const titleElement = document.createElement("p");
+      titleElement.classList.add("checkout-lamp-title");
+      titleElement.textContent = lampTitleText;
+      newDiv.appendChild(titleElement);
 
-//       const lampPrice = lampContainer.querySelector(".lamp-price").textContent;
-//       const priceElement = document.createElement("p");
-//       priceElement.classList.add("checkout-lamp-price");
-//       priceElement.textContent = lampPrice;
-//       newDiv.appendChild(priceElement);
+      const lampPrice = lampContainer.querySelector(".lamp-price").textContent;
+      const priceElement = document.createElement("p");
+      priceElement.classList.add("checkout-lamp-price");
+      priceElement.textContent = lampPrice;
+      newDiv.appendChild(priceElement);
 
-//       const quantityDiv = document.createElement("div");
-//       quantityDiv.classList.add("quantity-controls");
+      const quantityDiv = document.createElement("div");
+      quantityDiv.classList.add("quantity-controls");
 
-//       const decrementButton = document.createElement("button");
-//       decrementButton.textContent = "-";
-//       decrementButton.onclick = () => updateQuantity(newDiv, -1);
+      const decrementButton = document.createElement("button");
+      decrementButton.textContent = "-";
+      decrementButton.onclick = () => updateQuantity(newDiv, -1);
 
-//       const incrementButton = document.createElement("button");
-//       incrementButton.textContent = "+";
-//       incrementButton.onclick = () => updateQuantity(newDiv, 1);
+      const incrementButton = document.createElement("button");
+      incrementButton.textContent = "+";
+      incrementButton.onclick = () => updateQuantity(newDiv, 1);
 
-//       const quantityDisplay = document.createElement("span");
-//       quantityDisplay.textContent = "1";
-//       quantityDisplay.classList.add("quantity-display");
+      const quantityDisplay = document.createElement("span");
+      quantityDisplay.textContent = "1";
+      quantityDisplay.classList.add("quantity-display");
 
-//       quantityDiv.appendChild(decrementButton);
-//       quantityDiv.appendChild(quantityDisplay);
-//       quantityDiv.appendChild(incrementButton);
+      quantityDiv.appendChild(decrementButton);
+      quantityDiv.appendChild(quantityDisplay);
+      quantityDiv.appendChild(incrementButton);
 
-//       newDiv.appendChild(quantityDiv);
+      newDiv.appendChild(quantityDiv);
 
-//       const deleteLampButton = document.createElement("button");
-//       deleteLampButton.classList.add("delete-button");
-//       deleteLampButton.textContent = "Remove?";
-//       deleteLampButton.addEventListener("click", (event) => {
-//         event.target.parentElement.remove();
-//         updateTotal();
-//         updateBadgeCount();
-//       });
+      const deleteLampButton = document.createElement("button");
+      deleteLampButton.classList.add("delete-button");
+      deleteLampButton.textContent = "Remove?";
+      deleteLampButton.addEventListener("click", (event) => {
+        event.target.parentElement.remove();
+        updateTotal();
+        updateBadgeCount();
+      });
 
-//       newDiv.appendChild(deleteLampButton);
+      newDiv.appendChild(deleteLampButton);
 
-//       contentContainer.appendChild(newDiv);
-//       updateTotal();
-//       updateBadgeCount();
-//       updateQuantity();
-//     });
-//   });
-// };
-// addContent();
+      contentContainer.appendChild(newDiv);
+      updateTotal();
+      updateBadgeCount();
+      updateQuantity();
+    });
+  });
+};
+addContent();
 
 // QUANTITY
 const updateQuantity = (cartItem, change) => {
@@ -236,11 +236,7 @@ function renderProducts(products) {
       cardLink.classList.add("lamp-container", `lamp-${p.index + 1}`);
       cardLink.dataset.index = p.index;
       cardLink.dataset.category = p.category;
-
-      cardLink.href = `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
-      const isRo = p.slug === "ro-bordlampe" || (p.title && p.title.toLowerCase().includes("ro"));
-
-      cardLink.href = isRo ? "ro.html" : `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
+      cardLink.href = `info.html?slug=${encodeURIComponent(p.slug)}`;
 
       const stage = document.createElement("div");
       stage.classList.add("lamp-stage");
@@ -312,9 +308,6 @@ function renderProductCards(products, container) {
       const cardLink = document.createElement("div");
       cardLink.classList.add("lamp-container");
       cardLink.href = `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
-      const isRo = p.slug === "ro-bordlampe" || (p.title && p.title.toLowerCase().includes("ro"));
-
-      cardLink.href = isRo ? "ro.html" : `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
 
       const stage = document.createElement("div");
       stage.classList.add("lamp-stage");
