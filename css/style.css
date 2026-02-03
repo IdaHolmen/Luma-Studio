@@ -313,6 +313,11 @@ input:checked + .slider:before {
   transform: scale(1.02);
 }
 
+.lamp-title {
+  font-family: "Cardo", serif;
+  font-size: 1.5rem;
+}
+
 .lamp-info {
   width: 100%;
   height: 15rem;
@@ -373,7 +378,7 @@ body.is-dark .lamp-image__dark {
   width: 100%;
   height: 3rem;
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -561,6 +566,7 @@ body.is-dark .lamp-image__dark {
 .section-headline {
   font-family: "Cardo", serif;
   font-weight: 700;
+  font-size: 2rem;
   margin-bottom: 2rem;
 }
 

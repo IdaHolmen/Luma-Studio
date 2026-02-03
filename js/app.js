@@ -348,9 +348,9 @@ function renderProductCards(products, container) {
       viewProduct.textContent = "Se produkt";
 
       stage.append(imageLight, imageDark);
-      infoWrapper.append(title, description, price);
+      infoWrapper.append(title, description);
       info.append(infoWrapper, buttonWrapper);
-      buttonWrapper.append(viewProduct);
+      buttonWrapper.append(price, viewProduct);
       cardLink.append(stage, info);
 
       fragment.append(cardLink);
