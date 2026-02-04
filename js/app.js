@@ -317,9 +317,9 @@ function renderProductCards(products, container) {
   products
     .sort((a, b) => a.index - b.index)
     .forEach((p) => {
-      const cardLink = document.createElement("div");
-      cardLink.classList.add("lamp-container");
-      cardLink.href = `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
+      const card = document.createElement("div");
+      card.classList.add("lamp-container");
+      card.href = `product.html?id=${encodeURIComponent(p.id ?? p.index)}`;
 
       const stage = document.createElement("div");
       stage.classList.add("lamp-stage");
@@ -347,7 +347,7 @@ function renderProductCards(products, container) {
 
       const price = document.createElement("h4");
       price.classList.add("lamp-price");
-      price.textContent = `${p.basePrice},-`;
+      price.textContent = `Pris: ${p.basePrice},-`;
 
       const infoWrapper = document.createElement("div");
       const buttonWrapper = document.createElement("div");
@@ -357,15 +357,16 @@ function renderProductCards(products, container) {
       buttonWrapper.classList.add("button-wrapper");
       viewProduct.classList.add("view-product");
 
+      viewProduct.href = `info.html?slug=${encodeURIComponent(p.slug)}`;
       viewProduct.textContent = "Se produkt";
 
       stage.append(imageLight, imageDark);
       infoWrapper.append(title, description);
       info.append(infoWrapper, buttonWrapper);
       buttonWrapper.append(price, viewProduct);
-      cardLink.append(stage, info);
+      card.append(stage, info);
 
-      fragment.append(cardLink);
+      fragment.append(card);
     });
 
   container.append(fragment);

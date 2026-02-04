@@ -29,7 +29,7 @@ function updateGroupSelectedStyles(rowElement, groupKey) {
   });
 }
 
-function renderOptionGroups({ product, selectionContainer, priceEl }) {
+function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButton }) {
   const selected = {};
 
   const wrapsByKey = new Map();
@@ -39,7 +39,26 @@ function renderOptionGroups({ product, selectionContainer, priceEl }) {
   }
 
   const groups = (product.optionGroups || []).filter((group) => group.select === true);
-  if (groups.length === 0) return;
+  if (groups.length === 0) {
+    purchaseButton.disabled = false;
+    return;
+  }
+
+  purchaseButton.disabled = groups.some((g) => g.required === true);
+
+  function updatePurchaseButtonState() {
+    const renderedGroups = groups;
+
+    const missingRequired = renderedGroups.some((group) => {
+      if (group.required !== true) return false;
+      if (!shouldShowGroup(group, selected)) return false;
+      return !selected[group.key];
+    });
+
+    purchaseButton.disabled = missingRequired;
+
+    purchaseButton.textContent = missingRequired ? "Velg alternativ" : "Legg i handlekurv";
+  }
 
   for (const group of groups) {
     const wrap = document.createElement("div");
@@ -107,6 +126,8 @@ function renderOptionGroups({ product, selectionContainer, priceEl }) {
 
         const total = calculateTotalPrice(product, selected);
         priceEl.textContent = formatPriceNOK(total);
+
+        updatePurchaseButtonState();
       });
 
       row.append(input, label);
@@ -122,7 +143,7 @@ function renderOptionGroups({ product, selectionContainer, priceEl }) {
     if (!wrap) continue;
     wrap.hidden = !shouldShowGroup(group, selected);
   }
-
+  updatePurchaseButtonState();
   return selected;
 }
 
@@ -208,6 +229,7 @@ function renderOptionGroups({ product, selectionContainer, priceEl }) {
         product,
         selectionContainer,
         priceEl: price,
+        purchaseButton,
       });
     }
   } catch (err) {

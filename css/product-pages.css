@@ -71,6 +71,15 @@
   background-color: #7995d6;
 }
 
+.purchase-button:disabled {
+  background-color: grey;
+  cursor: not-allowed;
+}
+
+.purchase-button:disabled:hover {
+  background-color: grey;
+}
+
 /* OPTIONS */
 .option-group-wrap {
   margin: 14px 0 18px;
