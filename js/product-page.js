@@ -1,9 +1,135 @@
-// product-page.js
+function formatPriceNOK(value) {
+  return `${value} kr`;
+}
+
+function calculateTotalPrice(product, selected) {
+  let total = Number(product.basePrice) || 0;
+
+  for (const group of product.optionGroups || []) {
+    const chosen = selected[group.key];
+    if (!chosen) continue;
+
+    const option = (group.options || []).find((opt) => opt.value === chosen);
+    if (option) total += Number(option.priceDelta) || 0;
+  }
+  return total;
+}
+
+function shouldShowGroup(group, selected) {
+  if (!group.dependsOn) return true;
+  return selected[group.dependsOn.key] === group.dependsOn.value;
+}
+
+function updateGroupSelectedStyles(rowElement, groupKey) {
+  const inputs = rowElement.querySelectorAll(`input[name="${groupKey}"]`);
+  inputs.forEach((input) => {
+    const label = input.nextElementSibling;
+    if (!label) return;
+    label.classList.toggle("is-selected", input.checked);
+  });
+}
+
+function renderOptionGroups({ product, selectionContainer, priceEl }) {
+  const selected = {};
+
+  const wrapsByKey = new Map();
+
+  while (selectionContainer.firstChild) {
+    selectionContainer.removeChild(selectionContainer.firstChild);
+  }
+
+  const groups = (product.optionGroups || []).filter((group) => group.select === true);
+  if (groups.length === 0) return;
+
+  for (const group of groups) {
+    const wrap = document.createElement("div");
+    wrap.classList.add("option-group-wrap");
+    wrap.dataset.groupKey = group.key;
+
+    const title = document.createElement("div");
+    title.classList.add("option-group-title");
+    title.textContent = group.label || group.key;
+
+    const row = document.createElement("div");
+    row.classList.add("option-row");
+
+    wrap.append(title, row);
+    selectionContainer.append(wrap);
+    wrapsByKey.set(group.key, wrap);
+
+    for (const opt of group.options || []) {
+      const id = `${group.key}-${opt.value}`;
+
+      const input = document.createElement("input");
+      input.classList.add("option-radio");
+      input.type = "radio";
+      input.name = group.key;
+      input.id = id;
+      input.value = opt.value;
+
+      const label = document.createElement("label");
+      label.classList.add("option-card");
+      label.setAttribute("for", id);
+
+      const t = document.createElement("span");
+      t.classList.add("option-title");
+      t.textContent = opt.label;
+
+      const p = document.createElement("span");
+      p.classList.add("option-price");
+      const delta = Number(opt.priceDelta) || 0;
+      p.textContent = delta === 0 ? "Inkludert" : `+${delta} kr`;
+
+      label.append(t, p);
+
+      input.addEventListener("change", () => {
+        selected[group.key] = opt.value;
+
+        updateGroupSelectedStyles(row, group.key);
+
+        for (const g of groups) {
+          const gWrap = wrapsByKey.get(g.key);
+          if (!gWrap) continue;
+
+          const visible = shouldShowGroup(g, selected);
+          gWrap.hidden = !visible;
+
+          if (!visible && selected[g.key]) {
+            delete selected[g.key];
+
+            const gInputs = gWrap.querySelectorAll(`input[name="${g.key}"]`);
+            gInputs.forEach((i) => (i.checked = false));
+
+            const gRow = gWrap.querySelector(".option-row");
+            if (gRow) updateGroupSelectedStyles(gRow, g.key);
+          }
+        }
+
+        const total = calculateTotalPrice(product, selected);
+        priceEl.textContent = formatPriceNOK(total);
+      });
+
+      row.append(input, label);
+    }
+
+    updateGroupSelectedStyles(row, group.key);
+  }
+
+  priceEl.textContent = formatPriceNOK(calculateTotalPrice(product, selected));
+
+  for (const group of groups) {
+    const wrap = wrapsByKey.get(group.key);
+    if (!wrap) continue;
+    wrap.hidden = !shouldShowGroup(group, selected);
+  }
+
+  return selected;
+}
+
 (async function initProductPage() {
   const main = document.querySelector(".product-main-container");
   if (!main) return;
 
-  // Les slug fra URL: info.html?slug=dis-bordlampe
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("slug");
 
@@ -64,7 +190,7 @@
     productID.textContent = String(product._id);
     stock.textContent = Number(product.inventory) > 0 ? `På lager: ${product.inventory}` : "Utsolgt";
     description.textContent = product.description;
-    price.textContent = String(product.price);
+    price.textContent = formatPriceNOK(Number(product.basePrice) || 0);
     purchaseButton.textContent = "Legg i handlekurv";
     image.src = product.imageDark;
 
@@ -75,6 +201,15 @@
     heading.append(headline, productID, stock);
     descriptionContainer.append(description);
     pricingCheckoutContainer.append(price, purchaseButton);
+
+    let selectedOptions = null;
+    if (Array.isArray(product.optionGroups) && product.optionGroups.length > 0) {
+      selectedOptions = renderOptionGroups({
+        product,
+        selectionContainer,
+        priceEl: price,
+      });
+    }
   } catch (err) {
     console.error("Feil ved henting av produkt:", err);
     main.textContent = "Kunne ikke laste produktet akkurat nå.";

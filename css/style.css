@@ -737,3 +737,62 @@ footer {
 .numeric-button__increment:active {
   background: #2a3143;
 }
+
+/* OPTIONS */
+
+.option-group-wrap {
+  margin: 14px 0 18px;
+}
+
+.option-group-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.option-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.option-radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.option-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  min-width: 160px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.option-card:hover {
+  border-color: #999;
+}
+
+.option-card.is-selected {
+  border-color: #111;
+  background: #f4f4f4;
+}
+
+.option-card:focus-visible {
+  outline: 2px solid #005fcc;
+  outline-offset: 2px;
+}
+
+.option-title {
+  font-weight: 600;
+}
+.option-price {
+  font-size: 0.875rem;
+  color: #555;
+}
