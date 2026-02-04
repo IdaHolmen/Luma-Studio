@@ -29,7 +29,7 @@ function updateGroupSelectedStyles(rowElement, groupKey) {
   });
 }
 
-function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButton }) {
+function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButton, imageEl }) {
   const selected = {};
 
   const wrapsByKey = new Map();
@@ -103,6 +103,13 @@ function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButt
 
       input.addEventListener("change", () => {
         selected[group.key] = opt.value;
+
+        const isColorGroup = group.key.toLowerCase().includes("color");
+
+        if (isColorGroup && imageEl) {
+          const nextSrc = product.imageVariants?.color?.[opt.value];
+          imageEl.src = nextSrc || product.imageDark;
+        }
 
         updateGroupSelectedStyles(row, group.key);
 
@@ -230,6 +237,7 @@ function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButt
         selectionContainer,
         priceEl: price,
         purchaseButton,
+        imageEl: image,
       });
     }
   } catch (err) {
