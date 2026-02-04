@@ -1,5 +1,5 @@
 function formatPriceNOK(value) {
-  return `${value} kr`;
+  return `Pris: ${value} kr`;
 }
 
 function calculateTotalPrice(product, selected) {
@@ -163,7 +163,7 @@ function renderOptionGroups({ product, selectionContainer, priceEl }) {
     const pricingCheckoutContainer = document.createElement("div");
     // CREATING PRODUCT INFO ELEMENTS
     const headline = document.createElement("h1");
-    const productID = document.createElement("p");
+    const productID = document.createElement("div");
     const stock = document.createElement("p");
     const description = document.createElement("p");
     const price = document.createElement("p");
@@ -187,7 +187,7 @@ function renderOptionGroups({ product, selectionContainer, priceEl }) {
 
     // ADDING CONTENT
     headline.textContent = product.title;
-    productID.textContent = String(product._id);
+    productID.textContent = `ID: ${product._id}`;
     stock.textContent = Number(product.inventory) > 0 ? `På lager: ${product.inventory}` : "Utsolgt";
     description.textContent = product.description;
     price.textContent = formatPriceNOK(Number(product.basePrice) || 0);

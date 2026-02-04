@@ -1,3 +1,15 @@
+// Making page links bold when the current page is active
+const links = document.querySelectorAll(".page-link");
+const currentPath = window.location.pathname.split("/").pop();
+
+links.forEach((link) => {
+  const linkPath = link.getAttribute("href").split("/").pop();
+
+  if (linkPath === currentPath || (linkPath === "index.html" && currentPath === "")) {
+    link.classList.add("active");
+  }
+});
+
 //Image logic
 document.addEventListener("DOMContentLoaded", () => {
   const toggle = document.getElementById("toggle");
@@ -260,7 +272,7 @@ function renderProducts(products) {
 
       const price = document.createElement("div");
       price.classList.add("lamp-price");
-      price.textContent = `${p.price},-`;
+      price.textContent = `${p.basePrice},-`;
 
       stage.append(imageLight, imageDark);
       info.append(title, price);
@@ -335,7 +347,7 @@ function renderProductCards(products, container) {
 
       const price = document.createElement("h4");
       price.classList.add("lamp-price");
-      price.textContent = `${p.price},-`;
+      price.textContent = `${p.basePrice},-`;
 
       const infoWrapper = document.createElement("div");
       const buttonWrapper = document.createElement("div");
