@@ -1,3 +1,5 @@
+import { fetchProducts } from "./cards.js";
+
 function formatPriceNOK(value) {
   return `Pris: ${value} kr`;
 }
@@ -167,10 +169,7 @@ function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButt
   }
 
   try {
-    const res = await fetch("http://localhost:3000/api/products");
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const products = await res.json();
+    const products = await fetchProducts();
 
     const product = products.find((p) => p.slug === slug);
 

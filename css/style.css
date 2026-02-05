@@ -280,17 +280,16 @@ input:checked + .slider:before {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 3rem;
-  padding: 0 3rem;
   align-items: start;
 }
-
+/*
 .bestseller-container {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4rem;
+  gap: 2rem;
   align-items: start;
-}
+} */
 
 .main-container {
   width: 100%;
@@ -427,6 +426,10 @@ body.is-dark .lamp-image__dark {
   z-index: 1000;
   background: var(--primary-color);
   border: var(--border-black);
+}
+
+.checkout-container.is-open {
+  display: block;
 }
 
 .checkout-container__content {
