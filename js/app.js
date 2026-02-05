@@ -1,5 +1,7 @@
 // IMPORTS
 import { fetchProducts, renderCards, hasCategory } from "./cards.js";
+import "./checkout.js";
+import "./productPage.js";
 
 // FILTER
 let allProducts = [];

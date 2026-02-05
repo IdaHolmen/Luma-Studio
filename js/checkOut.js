@@ -7,8 +7,6 @@ const headerContainer = document.querySelector(".header");
 //When shopping-bag-icon is clicked the checkout is displayed and background is blurred
 const toggleCheckout = () => {
   checkoutMenu.classList.toggle("is-open");
-  document.querySelectorAll(".lamp-container").forEach((el) => el.classList.toggle("lamp-container--blurred"));
-  headerContainer.classList.toggle("header--blurred");
 };
 checkoutMenuButton.addEventListener("click", toggleCheckout);
 crossOutMenuButton.addEventListener("click", toggleCheckout);
@@ -16,7 +14,7 @@ crossOutMenuButton.addEventListener("click", toggleCheckout);
 // ADD CONTENT TO CHECKOUT
 
 const addContent = () => {
-  const cartButtons = document.querySelectorAll(".add__button");
+  const cartButtons = document.querySelectorAll(".purchase-button");
   const contentContainer = document.querySelector(".checkout-container-main-content");
 
   cartButtons.forEach((cartButton) => {

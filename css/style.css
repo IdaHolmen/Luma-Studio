@@ -115,6 +115,7 @@ body {
 }
 
 .badge {
+  display: none;
   width: 1rem;
   height: 1rem;
   background: var(--secondary-color);
