@@ -98,7 +98,7 @@ function renderOptionGroups({ product, selectionContainer, priceEl, imageEl, onV
       label.append(t, p);
 
       input.addEventListener("change", () => {
-        selected[group.key] = opt.value;
+        selected[group.key] = opt.label;
 
         const isColorGroup = group.key.toLowerCase().includes("color");
         if (isColorGroup && imageEl) {
@@ -221,13 +221,17 @@ function renderOptionGroups({ product, selectionContainer, priceEl, imageEl, onV
     descriptionContainer.append(description);
     pricingCheckoutContainer.append(price);
 
+    let selectedOptions = {};
+    const getSelectedOptions = () => ({ ...selectedOptions });
+
     const stepperCtrl = mountStepper({
       host: pricingCheckoutContainer,
       product,
       purchaseButton,
+      getSelectedOptions,
     });
 
-    function mountStepper({ host, product, purchaseButton }) {
+    function mountStepper({ host, product, purchaseButton, getSelectedOptions }) {
       const callToActionWrapper = document.createElement("div");
       callToActionWrapper.classList.add("call-to-action-wrapper");
       host.appendChild(callToActionWrapper);
@@ -260,7 +264,7 @@ function renderOptionGroups({ product, selectionContainer, priceEl, imageEl, onV
       }
 
       function render() {
-        const quantity = getItemQuantity(product.slug);
+        const quantity = getItemQuantity(product, getSelectedOptions?.() || {});
 
         if (max <= 0) {
           callToActionWrapper.textContent = "";
@@ -291,12 +295,12 @@ function renderOptionGroups({ product, selectionContainer, priceEl, imageEl, onV
       purchaseButton.type = "button";
       purchaseButton.addEventListener("click", () => {
         if (!optionsReady) return;
-        addToCart(product, 1);
+        addToCart(product, 1, getSelectedOptions?.() || {});
       });
-      minus.addEventListener("click", () => addToCart(product, -1));
+      minus.addEventListener("click", () => addToCart(product, -1, getSelectedOptions?.() || {}));
       plus.addEventListener("click", () => {
         if (!optionsReady) return;
-        addToCart(product, 1);
+        addToCart(product, 1, getSelectedOptions?.() || {});
       });
 
       render();
@@ -305,7 +309,6 @@ function renderOptionGroups({ product, selectionContainer, priceEl, imageEl, onV
       return { setOptionsReady };
     }
 
-    let selectedOptions = null;
     if (Array.isArray(product.optionGroups) && product.optionGroups.length > 0) {
       selectedOptions = renderOptionGroups({
         product,

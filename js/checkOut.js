@@ -1,8 +1,14 @@
 import { subscribeCart, getCartItems, getCartCount, addToCart } from "./cart.js";
 
+function formatChosenOptions(selectedOptions) {
+  const values = Object.values(selectedOptions || {}).filter(Boolean);
+  if (values.length === 0) return "Valgt: —";
+  return `${values.join(", ")}`;
+}
+
 const checkoutMenuButton = document.querySelector("#cart");
 const checkoutMenu = document.querySelector(".checkout-container");
-const crossOutMenuButton = document.querySelector(".exit-icon");
+const crossOutMenuButton = document.querySelector(".exit-cart-button");
 
 const contentContainer = document.querySelector(".checkout-container-main-content");
 const totalEl = document.querySelector(".total-price");
@@ -10,9 +16,29 @@ const badge = document.querySelector(".badge");
 
 const hasCheckoutUI = checkoutMenuButton && checkoutMenu && crossOutMenuButton && contentContainer && totalEl && badge;
 
-function toggleCheckout(e) {
-  e?.preventDefault?.();
+const toggleCheckout = () => {
   checkoutMenu.classList.toggle("is-open");
+  document.body.classList.toggle("checkout-open");
+};
+
+function createStepper({ product, quantity, selectedOptions }) {
+  const wrap = document.createElement("div");
+  wrap.classList.add("numeric-stepper-container");
+
+  const minus = createButton("-", () => addToCart(product, -1, selectedOptions), "numeric-button-reduce");
+
+  const value = document.createElement("span");
+  value.classList.add("numeric-element");
+  value.textContent = String(quantity);
+
+  const plus = createButton("+", () => addToCart(product, 1, selectedOptions), "numeric-button-increment");
+
+  const max = Number(product.inventory) > 0 ? Number(product.inventory) : 0;
+
+  if (max > 0 && quantity >= max) plus.disabled = true;
+
+  wrap.append(minus, value, plus);
+  return wrap;
 }
 
 if (checkoutMenuButton && checkoutMenu && crossOutMenuButton) {
@@ -39,7 +65,7 @@ function setBadge() {
 
 function setTotal(total) {
   if (!totalEl) return;
-  totalEl.textContent = `Total price: ${total},-`;
+  totalEl.textContent = `Totalpris: ${total},-`;
 }
 
 function createButton(label, onClick, className) {
@@ -52,7 +78,7 @@ function createButton(label, onClick, className) {
 }
 
 function createCartRow(item) {
-  const { product, quantity } = item;
+  const { product, quantity, selectedOptions } = item;
 
   const row = document.createElement("div");
   row.classList.add("checkout-container-flex");
@@ -64,27 +90,41 @@ function createCartRow(item) {
   img.alt = product.title || "Produkt";
   row.appendChild(img);
 
+  const detailWrapper = document.createElement("div");
+  detailWrapper.classList.add("checkout-detail-wrapper");
+  row.appendChild(detailWrapper);
+
   const title = document.createElement("p");
   title.classList.add("checkout-lamp-title");
   title.textContent = product.title ?? "";
-  row.appendChild(title);
+  detailWrapper.appendChild(title);
 
   const price = document.createElement("p");
   price.classList.add("checkout-lamp-price");
   price.textContent = `${product.basePrice},-`;
-  row.appendChild(price);
+  detailWrapper.appendChild(price);
 
-  const remove = createButton(
-    "Remove?",
-    () => {
-      addToCart(product, -quantity);
-    },
-    "delete-button"
-  );
+  const chosenOption = document.createElement("p");
+  chosenOption.classList.add("checkout-chosen-option");
+  chosenOption.textContent = formatChosenOptions(selectedOptions);
+  detailWrapper.appendChild(chosenOption);
 
-  row.appendChild(remove);
+  const stepper = createStepper({ product, quantity, selectedOptions });
+  row.appendChild(stepper);
 
   return row;
+}
+
+function createEmptyState() {
+  const wrap = document.createElement("div");
+  wrap.classList.add("checkout-empty-state");
+
+  const text = document.createElement("p");
+  text.textContent = "Handlekurven er tom";
+  text.classList.add("checkout-empty-text");
+
+  wrap.appendChild(text);
+  return wrap;
 }
 
 function renderCheckout() {
@@ -92,6 +132,13 @@ function renderCheckout() {
 
   const items = getCartItems();
   clear(contentContainer);
+
+  if (items.length === 0) {
+    contentContainer.appendChild(createEmptyState());
+    setTotal(0);
+    setBadge();
+    return;
+  }
 
   const frag = document.createDocumentFragment();
   let total = 0;

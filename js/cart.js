@@ -12,12 +12,22 @@ function notify() {
   for (const fn of listeners) fn();
 }
 
+function stableStringify(obj) {
+  const entries = Object.entries(obj || {}).sort(([a], [b]) => a.localeCompare(b));
+  return JSON.stringify(Object.fromEntries(entries));
+}
+
+function makeCartKey(product, selectedOptions) {
+  return `${product.slug}__${stableStringify(selectedOptions)}`;
+}
+
 function serializeCart() {
   return JSON.stringify(
-    Array.from(cart.entries()).map(([slug, { product, quantity }]) => ({
-      slug,
+    Array.from(cart.entries()).map(([key, { product, quantity, selectedOptions }]) => ({
+      key,
       quantity,
       product,
+      selectedOptions,
     }))
   );
 }
@@ -28,10 +38,14 @@ function hydrateCart(json) {
   if (!Array.isArray(arr)) return;
 
   for (const item of arr) {
-    if (!item?.slug || typeof item.quantity !== "number") continue;
+    if (!item?.key || typeof item.quantity !== "number") continue;
     if (!item.product) continue;
 
-    cart.set(item.slug, { product: item.product, quantity: item.quantity });
+    cart.set(item.key, {
+      product: item.product,
+      quantity: item.quantity,
+      selectedOptions: item.selectedOptions || {},
+    });
   }
 }
 
@@ -47,7 +61,6 @@ export function loadCartFromStorage() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
-
     hydrateCart(raw);
     notify();
   } catch (e) {
@@ -61,15 +74,16 @@ export function clearCart() {
   notify();
 }
 
-export function addToCart(product, qtyDelta = 1) {
-  const slug = product.slug;
-  const current = cart.get(slug)?.quantity || 0;
+export function addToCart(product, qtyDelta = 1, selectedOptions = {}) {
+  const opts = structuredClone ? structuredClone(selectedOptions) : JSON.parse(JSON.stringify(selectedOptions));
+  const key = makeCartKey(product, opts);
+  const current = cart.get(key)?.quantity || 0;
 
   const max = Number(product.inventory) > 0 ? Number(product.inventory) : Infinity;
   const next = Math.max(0, Math.min(current + qtyDelta, max));
 
-  if (next === 0) cart.delete(slug);
-  else cart.set(slug, { product, quantity: next });
+  if (next === 0) cart.delete(key);
+  else cart.set(key, { product, quantity: next, selectedOptions: opts });
 
   saveToStorage();
   notify();
@@ -85,6 +99,7 @@ export function getCartCount() {
   return count;
 }
 
-export function getItemQuantity(slug) {
-  return cart.get(slug)?.quantity || 0;
+export function getItemQuantity(product, selectedOptions = {}) {
+  const key = makeCartKey(product, selectedOptions);
+  return cart.get(key)?.quantity || 0;
 }
