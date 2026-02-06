@@ -1,4 +1,5 @@
 import { fetchProducts } from "./cards.js";
+import { addToCart, subscribeCart, getItemQuantity } from "./cart.js";
 
 function formatPriceNOK(value) {
   return `Pris: ${value} kr`;
@@ -30,10 +31,8 @@ function updateGroupSelectedStyles(rowElement, groupKey) {
     label.classList.toggle("is-selected", input.checked);
   });
 }
-
-function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButton, imageEl }) {
+function renderOptionGroups({ product, selectionContainer, priceEl, imageEl, onValidityChange }) {
   const selected = {};
-
   const wrapsByKey = new Map();
 
   while (selectionContainer.firstChild) {
@@ -41,25 +40,20 @@ function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButt
   }
 
   const groups = (product.optionGroups || []).filter((group) => group.select === true);
+
   if (groups.length === 0) {
-    purchaseButton.disabled = false;
-    return;
+    onValidityChange?.(true);
+    return selected;
   }
 
-  purchaseButton.disabled = groups.some((g) => g.required === true);
-
   function updatePurchaseButtonState() {
-    const renderedGroups = groups;
-
-    const missingRequired = renderedGroups.some((group) => {
+    const missingRequired = groups.some((group) => {
       if (group.required !== true) return false;
       if (!shouldShowGroup(group, selected)) return false;
       return !selected[group.key];
     });
 
-    purchaseButton.disabled = missingRequired;
-
-    purchaseButton.textContent = missingRequired ? "Velg alternativ" : "Legg i handlekurv";
+    onValidityChange?.(!missingRequired);
   }
 
   for (const group of groups) {
@@ -107,7 +101,6 @@ function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButt
         selected[group.key] = opt.value;
 
         const isColorGroup = group.key.toLowerCase().includes("color");
-
         if (isColorGroup && imageEl) {
           const nextSrc = product.imageVariants?.color?.[opt.value];
           imageEl.src = nextSrc || product.imageDark;
@@ -124,9 +117,7 @@ function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButt
 
           if (!visible && selected[g.key]) {
             delete selected[g.key];
-
-            const gInputs = gWrap.querySelectorAll(`input[name="${g.key}"]`);
-            gInputs.forEach((i) => (i.checked = false));
+            gWrap.querySelectorAll(`input[name="${g.key}"]`).forEach((i) => (i.checked = false));
 
             const gRow = gWrap.querySelector(".option-row");
             if (gRow) updateGroupSelectedStyles(gRow, g.key);
@@ -153,6 +144,7 @@ function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButt
     wrap.hidden = !shouldShowGroup(group, selected);
   }
   updatePurchaseButtonState();
+
   return selected;
 }
 
@@ -227,7 +219,91 @@ function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButt
     productImageContainer.append(image);
     heading.append(headline, productID, stock);
     descriptionContainer.append(description);
-    pricingCheckoutContainer.append(price, purchaseButton);
+    pricingCheckoutContainer.append(price);
+
+    const stepperCtrl = mountStepper({
+      host: pricingCheckoutContainer,
+      product,
+      purchaseButton,
+    });
+
+    function mountStepper({ host, product, purchaseButton }) {
+      const callToActionWrapper = document.createElement("div");
+      callToActionWrapper.classList.add("call-to-action-wrapper");
+      host.appendChild(callToActionWrapper);
+
+      const stepper = document.createElement("div");
+      stepper.classList.add("numeric-stepper-container");
+
+      const minus = document.createElement("button");
+      minus.type = "button";
+      minus.classList.add("numeric-button-reduce");
+      minus.textContent = "-";
+
+      const quantityElement = document.createElement("div");
+      quantityElement.classList.add("numeric-element");
+      quantityElement.textContent = "1";
+
+      const plus = document.createElement("button");
+      plus.type = "button";
+      plus.classList.add("numeric-button-increment");
+      plus.textContent = "+";
+
+      stepper.append(minus, quantityElement, plus);
+
+      const max = Number(product.inventory) > 0 ? Number(product.inventory) : 0;
+      let optionsReady = false;
+
+      function setOptionsReady(next) {
+        optionsReady = !!next;
+        render();
+      }
+
+      function render() {
+        const quantity = getItemQuantity(product.slug);
+
+        if (max <= 0) {
+          callToActionWrapper.textContent = "";
+          purchaseButton.disabled = true;
+          purchaseButton.textContent = "Utsolgt";
+          callToActionWrapper.appendChild(purchaseButton);
+          return;
+        }
+
+        if (quantity <= 0) {
+          callToActionWrapper.textContent = "";
+          purchaseButton.disabled = !optionsReady;
+          purchaseButton.textContent = optionsReady ? "Legg i handlekurv" : "Velg alternativ";
+          callToActionWrapper.appendChild(purchaseButton);
+          return;
+        }
+
+        callToActionWrapper.textContent = "";
+        quantityElement.textContent = String(quantity);
+
+        minus.disabled = false;
+
+        plus.disabled = quantity >= max || !optionsReady;
+
+        callToActionWrapper.appendChild(stepper);
+      }
+
+      purchaseButton.type = "button";
+      purchaseButton.addEventListener("click", () => {
+        if (!optionsReady) return;
+        addToCart(product, 1);
+      });
+      minus.addEventListener("click", () => addToCart(product, -1));
+      plus.addEventListener("click", () => {
+        if (!optionsReady) return;
+        addToCart(product, 1);
+      });
+
+      render();
+      subscribeCart(render);
+
+      return { setOptionsReady };
+    }
 
     let selectedOptions = null;
     if (Array.isArray(product.optionGroups) && product.optionGroups.length > 0) {
@@ -235,9 +311,11 @@ function renderOptionGroups({ product, selectionContainer, priceEl, purchaseButt
         product,
         selectionContainer,
         priceEl: price,
-        purchaseButton,
         imageEl: image,
+        onValidityChange: stepperCtrl.setOptionsReady,
       });
+    } else {
+      stepperCtrl.setOptionsReady(true);
     }
   } catch (err) {
     console.error("Feil ved henting av produkt:", err);

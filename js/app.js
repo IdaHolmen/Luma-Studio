@@ -1,8 +1,10 @@
 // IMPORTS
 import { fetchProducts, renderCards, hasCategory } from "./cards.js";
+import { loadCartFromStorage } from "./cart.js";
 import "./checkout.js";
 import "./productPage.js";
 
+loadCartFromStorage();
 // FILTER
 let allProducts = [];
 let activeFilter = "all";

@@ -1,112 +1,114 @@
-//CHECKOUT
+import { subscribeCart, getCartItems, getCartCount, addToCart } from "./cart.js";
+
 const checkoutMenuButton = document.querySelector("#cart");
 const checkoutMenu = document.querySelector(".checkout-container");
 const crossOutMenuButton = document.querySelector(".exit-icon");
-const headerContainer = document.querySelector(".header");
 
-//When shopping-bag-icon is clicked the checkout is displayed and background is blurred
-const toggleCheckout = () => {
-  checkoutMenu.classList.toggle("is-open");
-};
-checkoutMenuButton.addEventListener("click", toggleCheckout);
-crossOutMenuButton.addEventListener("click", toggleCheckout);
-
-// ADD CONTENT TO CHECKOUT
-
-const addContent = () => {
-  const cartButtons = document.querySelectorAll(".purchase-button");
-  const contentContainer = document.querySelector(".checkout-container-main-content");
-
-  cartButtons.forEach((cartButton) => {
-    cartButton.addEventListener("click", () => {
-      const lampContainer = cartButton.closest(".lamp-container");
-
-      //Creating the div dynamically!
-      const newDiv = document.createElement("div");
-      newDiv.classList.add("checkout-container-flex");
-
-      const lampImage = lampContainer.querySelector(".lamp-image").cloneNode(true);
-      lampImage.classList.add("image-element-checkout");
-      newDiv.appendChild(lampImage);
-
-      const lampTitleText = lampContainer.querySelector(".lamp-title").textContent;
-      const titleElement = document.createElement("p");
-      titleElement.classList.add("checkout-lamp-title");
-      titleElement.textContent = lampTitleText;
-      newDiv.appendChild(titleElement);
-
-      const lampPrice = lampContainer.querySelector(".lamp-price").textContent;
-      const priceElement = document.createElement("p");
-      priceElement.classList.add("checkout-lamp-price");
-      priceElement.textContent = lampPrice;
-      newDiv.appendChild(priceElement);
-
-      const quantityDiv = document.createElement("div");
-      quantityDiv.classList.add("quantity-controls");
-
-      const decrementButton = document.createElement("button");
-      decrementButton.textContent = "-";
-      decrementButton.onclick = () => updateQuantity(newDiv, -1);
-
-      const incrementButton = document.createElement("button");
-      incrementButton.textContent = "+";
-      incrementButton.onclick = () => updateQuantity(newDiv, 1);
-
-      const quantityDisplay = document.createElement("span");
-      quantityDisplay.textContent = "1";
-      quantityDisplay.classList.add("quantity-display");
-
-      quantityDiv.appendChild(decrementButton);
-      quantityDiv.appendChild(quantityDisplay);
-      quantityDiv.appendChild(incrementButton);
-
-      newDiv.appendChild(quantityDiv);
-
-      const deleteLampButton = document.createElement("button");
-      deleteLampButton.classList.add("delete-button");
-      deleteLampButton.textContent = "Remove?";
-      deleteLampButton.addEventListener("click", (event) => {
-        event.target.parentElement.remove();
-        updateTotal();
-        updateBadgeCount();
-      });
-
-      newDiv.appendChild(deleteLampButton);
-
-      contentContainer.appendChild(newDiv);
-      updateTotal();
-      updateBadgeCount();
-      updateQuantity();
-    });
-  });
-};
-
-//TOTAL SUM
-const updateTotal = () => {
-  let total = 0;
-
-  const cartItems = document.querySelectorAll(".checkout-container-flex");
-  cartItems.forEach((cartItem) => {
-    const price = parseInt(cartItem.querySelector(".checkout-lamp-price").textContent.replace(",-", ""));
-    const quantity = parseInt(cartItem.querySelector(".quantity-display").textContent);
-    total += price * quantity;
-  });
-
-  document.querySelector(".total-price").innerText = "Total price: " + total + ",-";
-};
-
-//BADGE
+const contentContainer = document.querySelector(".checkout-container-main-content");
+const totalEl = document.querySelector(".total-price");
 const badge = document.querySelector(".badge");
 
-const updateBadgeCount = () => {
-  const cartItems = document.querySelectorAll(".checkout-container-flex");
-  const badgeCount = cartItems.length;
+const hasCheckoutUI = checkoutMenuButton && checkoutMenu && crossOutMenuButton && contentContainer && totalEl && badge;
 
-  console.log(badgeCount);
-  if (badgeCount > 0) {
-    badge.textContent = badgeCount;
+function toggleCheckout(e) {
+  e?.preventDefault?.();
+  checkoutMenu.classList.toggle("is-open");
+}
+
+if (checkoutMenuButton && checkoutMenu && crossOutMenuButton) {
+  checkoutMenuButton.addEventListener("click", toggleCheckout);
+  crossOutMenuButton.addEventListener("click", toggleCheckout);
+}
+
+function clear(el) {
+  while (el.firstChild) el.removeChild(el.firstChild);
+}
+
+function setBadge() {
+  if (!badge) return;
+  const count = getCartCount();
+
+  if (count > 0) {
+    badge.textContent = String(count);
     badge.style.display = "flex";
   } else {
+    badge.textContent = "";
     badge.style.display = "none";
   }
-};
+}
+
+function setTotal(total) {
+  if (!totalEl) return;
+  totalEl.textContent = `Total price: ${total},-`;
+}
+
+function createButton(label, onClick, className) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.textContent = label;
+  if (className) btn.classList.add(className);
+  btn.addEventListener("click", onClick);
+  return btn;
+}
+
+function createCartRow(item) {
+  const { product, quantity } = item;
+
+  const row = document.createElement("div");
+  row.classList.add("checkout-container-flex");
+  row.dataset.slug = product.slug;
+
+  const img = document.createElement("img");
+  img.classList.add("image-element-checkout");
+  img.src = product.imageDark || product.imageLight || "";
+  img.alt = product.title || "Produkt";
+  row.appendChild(img);
+
+  const title = document.createElement("p");
+  title.classList.add("checkout-lamp-title");
+  title.textContent = product.title ?? "";
+  row.appendChild(title);
+
+  const price = document.createElement("p");
+  price.classList.add("checkout-lamp-price");
+  price.textContent = `${product.basePrice},-`;
+  row.appendChild(price);
+
+  const remove = createButton(
+    "Remove?",
+    () => {
+      addToCart(product, -quantity);
+    },
+    "delete-button"
+  );
+
+  row.appendChild(remove);
+
+  return row;
+}
+
+function renderCheckout() {
+  if (!contentContainer) return;
+
+  const items = getCartItems();
+  clear(contentContainer);
+
+  const frag = document.createDocumentFragment();
+  let total = 0;
+
+  for (const item of items) {
+    total += (Number(item.product.basePrice) || 0) * item.quantity;
+    frag.appendChild(createCartRow(item));
+  }
+
+  contentContainer.appendChild(frag);
+  setTotal(total);
+  setBadge();
+}
+
+if (hasCheckoutUI) {
+  document.addEventListener("DOMContentLoaded", () => {
+    renderCheckout();
+    subscribeCart(renderCheckout);
+  });
+}
