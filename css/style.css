@@ -130,6 +130,8 @@ body.checkout-open .header {
 
 .page-link {
   font-size: 1.125rem;
+  padding: 0.8rem 1.5rem;
+  white-space: nowrap;
 }
 
 .page-link:hover {
@@ -603,4 +605,102 @@ footer {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+/* CONTACT PAGE STYLING */
+.contact-container {
+  margin: 4rem 0;
+  padding: 0 3rem;
+  color: var(--secondary-color);
+}
+
+.contact-section {
+  display: flex;
+  flex-direction: row;
+}
+
+.contact-form-container {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1.5rem;
+}
+
+.map-container {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.name-wrapper,
+.email-wrapper,
+.message-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem 0;
+}
+
+.fullname-label,
+.email-label,
+.message-label {
+  font-weight: 600;
+}
+
+#fullname,
+#email {
+  height: 2.5rem;
+  padding-left: 0.5rem;
+}
+
+#message {
+  height: 8rem;
+  padding-left: 0.5rem;
+  padding-top: 0.3rem;
+}
+
+.message-error-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.submit-button-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.submit-button {
+  max-width: 11rem;
+  font-weight: 600;
+  padding: 0.8rem 1.5rem;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  border-radius: 0.5rem;
+}
+
+.submit-button:hover {
+  background-color: #546386;
+}
+
+.field-error {
+  visibility: hidden;
+  font-weight: 600;
+  color: rgb(117, 0, 0);
+}
+
+.submission-status {
+  visibility: hidden;
+  font-weight: 600;
+}
+
+input.has-error,
+textarea.has-error {
+  border-color: 1px solid rgb(117, 0, 0);
 }

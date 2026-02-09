@@ -30,6 +30,10 @@ if (!uri) {
 
 const client = new MongoClient(uri);
 
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
+}
+
 app.get("/health", async (req, res) => {
   try {
     await client.connect();
@@ -51,6 +55,51 @@ app.get("/api/products", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: String(err) });
+  }
+});
+
+app.post("/api/messages", async (req, res) => {
+  try {
+    await client.connect();
+
+    const { fullname, email, message } = req.body || {};
+
+    if (!fullname || !email || !message) {
+      return res.status(400).json({ ok: false, error: "Fullt navn, e-post og melding er påkrevd" });
+    }
+
+    const fullnameTrim = String(fullname).trim();
+    const emailTrim = String(email).trim();
+    const messageTrim = String(message).trim();
+
+    if (fullnameTrim.length < 2 || fullnameTrim.length > 100) {
+      return res.status(400).json({ ok: false, error: "Fullt navn må være mellom 2 og 100 tegn" });
+    }
+
+    if (!isValidEmail(emailTrim) || emailTrim.length > 100) {
+      return res.status(400).json({ ok: false, error: "Ugyldig e-postadresse" });
+    }
+
+    if (messageTrim.length < 2 || messageTrim.length > 300) {
+      return res.status(400).json({ ok: false, error: "Melding må være mellom 2 og 300 tegn" });
+    }
+
+    const doc = {
+      fullname: fullnameTrim,
+      email: emailTrim.toLowerCase(),
+      message: messageTrim,
+      createdAt: new Date(),
+      source: "contact-form",
+      ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
+      userAgent: req.headers["user-agent"] || "",
+    };
+
+    const result = await client.db("luma").collection("messages").insertOne(doc);
+
+    return res.status(201).json({ ok: true, id: result.insertedId });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ ok: false, error: String(err) });
   }
 });
 

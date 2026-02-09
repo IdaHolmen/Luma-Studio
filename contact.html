@@ -111,7 +111,58 @@
         </div>
       </header>
 
-      <main class="main-container"></main>
+      <main class="contact-container">
+        <h1 class="section-headline">Kontakt</h1>
+        <section class="contact-section">
+          <div class="contact-form-container">
+            <form id="contact-form" novalidate>
+              <div class="name-wrapper">
+                <label for="fullname" class="fullname-label">
+                  Fullt navn:
+                  <sup>*</sup>
+                </label>
+                <input type="text" id="fullname" name="user_fullname" placeholder="Skriv inn fullt navn" maxlength="100" />
+                <p class="field-error" id="fullname-error">Error</p>
+              </div>
+              <div class="email-wrapper">
+                <label for="email" class="email-label">
+                  E-post:
+                  <sup>*</sup>
+                </label>
+                <input type="email" id="email" name="user_email" placeholder="Skriv inn e-postadressen din" maxlength="100" />
+                <label for=""></label>
+                <p class="field-error" id="email-error">Error</p>
+              </div>
+              <div class="message-wrapper">
+                <label for="message" class="message-label">
+                  Melding:
+                  <sup>*</sup>
+                </label>
+                <textarea id="message" name="user_message" placeholder="Skriv din melding. Maks 300 tegn" maxlength="300"></textarea>
+                <div class="message-error-container">
+                  <p class="field-error" id="message-error">Error</p>
+                  <label class="character-count" id="message-count">Tegn: 0</label>
+                </div>
+              </div>
+              <div class="submit-button-container">
+                <p class="submission-status" id="submission-status" aria-live="polite"></p>
+                <button type="submit" class="submit-button">Send melding</button>
+              </div>
+            </form>
+          </div>
+          <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2000.1990529861173!2d10.734511776734193!3d59.912243764226!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46416e879d2105e1%3A0x6b1b4b1bf9345f4f!2sRosenkrantz&#39;%20gate%2016%2C%200160%20Oslo!5e0!3m2!1sno!2sno!4v1770629054281!5m2!1sno!2sno"
+              width="600"
+              height="550"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </section>
+      </main>
 
       <footer>
         <div class="footer-content-wrapper">
@@ -212,5 +263,6 @@
     </div>
 
     <script type="module" src="./js/app.js"></script>
+    <script type="module" src="./js/form.js"></script>
   </body>
 </html>
