@@ -101,6 +101,14 @@ app.post("/api/messages", async (req, res) => {
   }
 });
 
+app.use("/api", (req, res) => {
+  res.status(404).json({ ok: false, error: "API route not found" });
+});
+
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, "..", "404.html"));
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server kjører på http://localhost:${PORT}`);

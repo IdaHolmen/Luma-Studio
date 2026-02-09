@@ -527,6 +527,10 @@ footer {
   color: var(--secondary-color);
 }
 
+#footer-home-button:hover {
+  color: #546386;
+}
+
 .footer-links {
   display: flex;
   flex-direction: column;
@@ -550,6 +554,10 @@ footer {
 
 .footer-icons {
   width: 1.5rem;
+}
+
+.footer-social-links:hover {
+  color: #546386;
 }
 
 .footer-social-icon {
@@ -743,4 +751,40 @@ textarea.has-error {
 textarea:focus,
 input:focus {
   outline: 1px solid var(--secondary-color);
+}
+
+.notfound {
+  padding: 4rem 3rem;
+  color: var(--secondary-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+.notfound-headline {
+  font-family: "Cardo", serif;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.notfound-paragraph {
+  max-width: 52ch;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
+}
+.notfound-button {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  border-radius: 0.5rem;
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+.notfound-button:hover {
+  background: #546386;
+}
+
+.notfound-image {
+  width: 5rem;
+  height: 5rem;
 }
