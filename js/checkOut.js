@@ -1,9 +1,13 @@
 import { subscribeCart, getCartItems, getCartCount, addToCart } from "./cart.js";
 
 function formatChosenOptions(selectedOptions) {
-  const values = Object.values(selectedOptions || {}).filter(Boolean);
-  if (values.length === 0) return "Valgt: —";
-  return `${values.join(", ")}`;
+  const labels = selectedOptions?.optionLabels || {};
+  const values = selectedOptions?.optionValues || {};
+
+  const list = Object.keys(labels).length ? Object.values(labels).filter(Boolean) : Object.values(values).filter(Boolean).map(String);
+
+  if (list.length === 0) return "Valgt: —";
+  return `${list.join(", ")}`;
 }
 
 const checkoutMenuButton = document.querySelector("#cart");
@@ -101,7 +105,7 @@ function createCartRow(item) {
 
   const price = document.createElement("p");
   price.classList.add("checkout-lamp-price");
-  price.textContent = `${product.basePrice},-`;
+  price.textContent = `${Number(item.unitPrice) || Number(product.basePrice) || 0},-`;
   detailWrapper.appendChild(price);
 
   const chosenOption = document.createElement("p");
@@ -144,7 +148,7 @@ function renderCheckout() {
   let total = 0;
 
   for (const item of items) {
-    total += (Number(item.product.basePrice) || 0) * item.quantity;
+    total += (Number(item.unitPrice) || 0) * item.quantity;
     frag.appendChild(createCartRow(item));
   }
 

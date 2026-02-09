@@ -10,9 +10,10 @@ function calculateTotalPrice(product, selected) {
 
   for (const group of product.optionGroups || []) {
     const chosen = selected[group.key];
-    if (!chosen) continue;
+    const chosenValue = typeof chosen === "object" && chosen ? chosen.value : chosen;
+    if (!chosenValue) continue;
 
-    const option = (group.options || []).find((opt) => opt.value === chosen);
+    const option = (group.options || []).find((opt) => opt.value === chosenValue);
     if (option) total += Number(option.priceDelta) || 0;
   }
   return total;
@@ -20,7 +21,11 @@ function calculateTotalPrice(product, selected) {
 
 function shouldShowGroup(group, selected) {
   if (!group.dependsOn) return true;
-  return selected[group.dependsOn.key] === group.dependsOn.value;
+
+  const parent = selected[group.dependsOn.key];
+  const parentValue = typeof parent === "object" && parent ? parent.value : parent;
+
+  return parentValue === group.dependsOn.value;
 }
 
 function updateGroupSelectedStyles(rowElement, groupKey) {
@@ -31,6 +36,7 @@ function updateGroupSelectedStyles(rowElement, groupKey) {
     label.classList.toggle("is-selected", input.checked);
   });
 }
+
 function renderOptionGroups({ product, selectionContainer, priceEl, imageEl, onValidityChange }) {
   const selected = {};
   const wrapsByKey = new Map();
@@ -98,7 +104,8 @@ function renderOptionGroups({ product, selectionContainer, priceEl, imageEl, onV
       label.append(t, p);
 
       input.addEventListener("change", () => {
-        selected[group.key] = opt.label;
+        // SAVING BOTH THE VALUE (PRICE) AND THE LABEL (CHOSEN ALTERNATIVE)
+        selected[group.key] = { value: opt.value, label: opt.label };
 
         const isColorGroup = group.key.toLowerCase().includes("color");
         if (isColorGroup && imageEl) {
@@ -222,7 +229,23 @@ function renderOptionGroups({ product, selectionContainer, priceEl, imageEl, onV
     pricingCheckoutContainer.append(price);
 
     let selectedOptions = {};
-    const getSelectedOptions = () => ({ ...selectedOptions });
+
+    const getSelectedOptions = () => {
+      const optionValues = {};
+      const optionLabels = {};
+
+      for (const [k, v] of Object.entries(selectedOptions || {})) {
+        if (v && typeof v === "object") {
+          optionValues[k] = v.value;
+          optionLabels[k] = v.label;
+        } else {
+          optionValues[k] = v;
+          optionLabels[k] = v;
+        }
+      }
+
+      return { optionValues, optionLabels };
+    };
 
     const stepperCtrl = mountStepper({
       host: pricingCheckoutContainer,
@@ -264,7 +287,7 @@ function renderOptionGroups({ product, selectionContainer, priceEl, imageEl, onV
       }
 
       function render() {
-        const quantity = getItemQuantity(product, getSelectedOptions?.() || {});
+        const quantity = getItemQuantity(product, getSelectedOptions());
 
         if (max <= 0) {
           callToActionWrapper.textContent = "";
@@ -295,12 +318,12 @@ function renderOptionGroups({ product, selectionContainer, priceEl, imageEl, onV
       purchaseButton.type = "button";
       purchaseButton.addEventListener("click", () => {
         if (!optionsReady) return;
-        addToCart(product, 1, getSelectedOptions?.() || {});
+        addToCart(product, 1, getSelectedOptions());
       });
-      minus.addEventListener("click", () => addToCart(product, -1, getSelectedOptions?.() || {}));
+      minus.addEventListener("click", () => addToCart(product, -1, getSelectedOptions()));
       plus.addEventListener("click", () => {
         if (!optionsReady) return;
-        addToCart(product, 1, getSelectedOptions?.() || {});
+        addToCart(product, 1, getSelectedOptions());
       });
 
       render();

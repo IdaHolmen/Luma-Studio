@@ -17,17 +17,19 @@ function stableStringify(obj) {
   return JSON.stringify(Object.fromEntries(entries));
 }
 
-function makeCartKey(product, selectedOptions) {
-  return `${product.slug}__${stableStringify(selectedOptions)}`;
+function makeCartKey(product, selection) {
+  const { optionValues } = normalizeSelection(selection);
+  return `${product.slug}__${stableStringify(optionValues)}`;
 }
 
 function serializeCart() {
   return JSON.stringify(
-    Array.from(cart.entries()).map(([key, { product, quantity, selectedOptions }]) => ({
+    Array.from(cart.entries()).map(([key, { product, quantity, selectedOptions, unitPrice }]) => ({
       key,
       quantity,
       product,
       selectedOptions,
+      unitPrice,
     }))
   );
 }
@@ -44,9 +46,23 @@ function hydrateCart(json) {
     cart.set(item.key, {
       product: item.product,
       quantity: item.quantity,
-      selectedOptions: item.selectedOptions || {},
+      selectedOptions: item.selectedOptions || { optionValues: {}, optionLabels: {} },
+      unitPrice: typeof item.unitPrice === "number" ? item.unitPrice : Number(item.product?.basePrice) || 0,
     });
   }
+}
+
+function calculateTotalPrice(product, optionValues) {
+  let total = Number(product.basePrice) || 0;
+
+  for (const group of product.optionGroups || []) {
+    const chosenValue = optionValues?.[group.key];
+    if (!chosenValue) continue;
+
+    const option = (group.options || []).find((opt) => opt.value === chosenValue);
+    if (option) total += Number(option.priceDelta) || 0;
+  }
+  return total;
 }
 
 function saveToStorage() {
@@ -74,8 +90,22 @@ export function clearCart() {
   notify();
 }
 
+function normalizeSelection(selectedOptions) {
+  if (selectedOptions && typeof selectedOptions === "object" && ("optionValues" in selectedOptions || "optionLabels" in selectedOptions)) {
+    return {
+      optionValues: selectedOptions.optionValues || {},
+      optionLabels: selectedOptions.optionLabels || {},
+    };
+  }
+
+  return { optionValues: selectedOptions || {}, optionLabels: {} };
+}
+
 export function addToCart(product, qtyDelta = 1, selectedOptions = {}) {
-  const opts = structuredClone ? structuredClone(selectedOptions) : JSON.parse(JSON.stringify(selectedOptions));
+  const selection = normalizeSelection(selectedOptions);
+
+  const opts = structuredClone ? structuredClone(selection) : JSON.parse(JSON.stringify(selection));
+
   const key = makeCartKey(product, opts);
   const current = cart.get(key)?.quantity || 0;
 
@@ -83,14 +113,26 @@ export function addToCart(product, qtyDelta = 1, selectedOptions = {}) {
   const next = Math.max(0, Math.min(current + qtyDelta, max));
 
   if (next === 0) cart.delete(key);
-  else cart.set(key, { product, quantity: next, selectedOptions: opts });
+  else {
+    const unitPrice = calculateTotalPrice(product, opts.optionValues);
+    cart.set(key, {
+      product,
+      quantity: next,
+      selectedOptions: opts,
+      unitPrice,
+    });
+  }
 
   saveToStorage();
   notify();
 }
 
 export function getCartItems() {
-  return Array.from(cart.values());
+  return Array.from(cart.values()).map((item) => {
+    if (typeof item.unitPrice === "number") return item;
+    const selection = normalizeSelection(item.selectedOptions);
+    return { ...item, selectedOptions: selection, unitPrice: calculateTotalPrice(item.product, selection.optionValues) };
+  });
 }
 
 export function getCartCount() {
