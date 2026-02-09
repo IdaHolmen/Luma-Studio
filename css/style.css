@@ -576,3 +576,31 @@ footer {
 .numeric-button-increment:active {
   background: #2a3143;
 }
+
+/* ABOUT PAGE STYLING */
+.about-container {
+  margin: 4rem 0;
+  color: var(--secondary-color);
+}
+
+.about-section {
+  display: flex;
+  flex-direction: row;
+  margin-top: 4rem;
+}
+
+.about-image-container {
+  width: 50%;
+}
+
+.about-image {
+  border-radius: 0.5rem;
+}
+
+.about-info {
+  width: 50%;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
