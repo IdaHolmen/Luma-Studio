@@ -200,6 +200,7 @@ function renderOptionGroups({ product, selectionContainer, priceEl, imageEl, onV
     // ADDING CLASSES
     productInfoContainer.classList.add("product-info-container");
     productImageContainer.classList.add("product-image-container");
+    image.classList.add("product-image");
     heading.classList.add("products-heading");
     descriptionContainer.classList.add("products-description-container");
     selectionContainer.classList.add("selection-container-products");

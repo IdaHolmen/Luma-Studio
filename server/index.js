@@ -90,8 +90,6 @@ app.post("/api/messages", async (req, res) => {
       message: messageTrim,
       createdAt: new Date(),
       source: "contact-form",
-      ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
-      userAgent: req.headers["user-agent"] || "",
     };
 
     const result = await client.db("luma").collection("messages").insertOne(doc);
